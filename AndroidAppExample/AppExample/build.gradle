@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.github.nikolaymakhonin.androidappexample"
+        applicationId "com.github.nikolaymakhonin.android_app_example"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1

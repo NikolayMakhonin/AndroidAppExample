@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.androidappexample;
+package com.github.nikolaymakhonin.android_app_example;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;

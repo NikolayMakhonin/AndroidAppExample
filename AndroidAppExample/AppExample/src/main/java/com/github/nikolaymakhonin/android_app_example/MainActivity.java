@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.androidappexample;
+package com.github.nikolaymakhonin.android_app_example;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

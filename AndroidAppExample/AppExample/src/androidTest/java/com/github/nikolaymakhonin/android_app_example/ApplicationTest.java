@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.androidappexample;
+package com.github.nikolaymakhonin.android_app_example;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
