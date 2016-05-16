@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.github.nikolaymakhonin.androidappexample"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -6,8 +7,27 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="true">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat"
+            >
+            <intent-filter>
+                <!-- For Google Search: -->
+                <!-- http://developer.android.com/training/app-indexing/deep-linking.html -->
+                <!-- https://developers.google.com/app-indexing/android/app#add-intent-filters-for-http-urls -->
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"
+                    android:host="www.github.com"
+                    android:pathPrefix="/NikolayMakhonin/AndroidAppExample" />
 
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
