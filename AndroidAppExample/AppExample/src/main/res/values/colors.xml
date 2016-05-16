@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!-- Palette -->
+    <!-- https://www.google.com/design/spec/style/color.html#color-color-palette -->
+
+    <!-- Primary Colors: Indigo [100, 500, 700] -->
+    <color name="primaryLight">#C5CAE9</color>
+    <color name="primary">#3F51B5</color>
+    <color name="primaryDark">#303F9F</color>
+
+    <!--&lt;!&ndash; Secondary Colors: Indigo [100, 500, 700] &ndash;&gt;-->
+    <!--<color name="colorSecondaryLight">#C5CAE9</color>-->
+    <!--<color name="colorSecondary">#3F51B5</color>-->
+    <!--<color name="colorSecondaryDark">#303F9F</color>-->
+
+    <!-- Accent: Green [50, 200, 500] -->
+    <color name="accentLight">#E8F5E9</color>
+    <color name="accent">#A5D6A7</color>
+    <color name="accentDark">#4CAF50</color>
+
+    <!-- Text: Light [87%, 54%, 38%, 12%] -->
+    <color name="textPrimaryLight">#FFFFFFFF</color>
+    <color name="textSecondaryLight">#99FFFFFF</color>
+    <!-- Disabled text, hint text, and icons -->
+    <color name="textHintLight">#7FFFFFFF</color>
+    <color name="textDividerLight">#1EFFFFFF</color>
+
+    <!-- Text: Dark [87%, 54%, 38%, 12%] -->
+    <color name="textPrimaryDark">#DD000000</color>
+    <color name="textSecondaryDark">#89000000</color>
+    <!-- Disabled text, hint text, and icons -->
+    <color name="textHintDark">#60000000</color>
+    <color name="textDividerDark">#1E000000</color>
+
+    <!-- Icon: Light [100%, 50%] -->
+    <color name="iconActiveLight">#FFFFFFFF</color>
+    <color name="iconInactiveLight">#7FFFFFFF</color>
+
+    <!-- Icon: Dark [54%, 38%] -->
+    <color name="iconActiveDark">#89000000</color>
+    <color name="iconInactiveDark">#60000000</color>
+
 </resources>
