@@ -11,7 +11,7 @@
         android:fullBackupContent="true">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat"
+            android:theme="@style/AppTheme"
             >
             <intent-filter>
                 <!-- For Google Search: -->

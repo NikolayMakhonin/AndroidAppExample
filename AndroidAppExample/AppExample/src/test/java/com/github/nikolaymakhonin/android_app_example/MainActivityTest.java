@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 /** Docs: http://robolectric.org/ */
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.JELLY_BEAN)
+@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
 public class MainActivityTest {
 
     private Activity _mainActivity;
