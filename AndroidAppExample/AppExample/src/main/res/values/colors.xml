@@ -3,11 +3,12 @@
     <!-- region Palette -->
     <!-- https://www.google.com/design/spec/style/color.html#color-color-palette -->
 
-    <!-- Primary Colors: Indigo [100, 500, 700] -->
+    <!-- Primary Colors: Indigo [0, 100, 300, 500, 700] -->
     <color name="primaryBright">#FFFFFF</color>
     <color name="primaryLight">#C5CAE9</color>
-    <color name="primary">#3F51B5</color>
-    <color name="primaryDark">#303F9F</color>
+    <color name="primary">#7986CB</color>
+    <color name="primaryDark">#3F51B5</color>
+    <color name="primaryVeryDark">#303F9F</color>
 
     <!--&lt;!&ndash; Secondary Colors: Indigo [100, 500, 700] &ndash;&gt;-->
     <!--<color name="colorSecondaryLight">#C5CAE9</color>-->
@@ -45,8 +46,11 @@
 
     <!-- region Layout -->
 
+    <color name="statusBar">@color/primaryVeryDark</color>
+    <color name="systemNavigationBar">@color/primaryVeryDark</color>
+    <color name="toolBar">@color/primaryDark</color>
+    <color name="tabNavigationBar">@color/primary</color>
     <color name="windowBackground">@color/primaryLight</color>
-    <color name="toolBar">@color/primary</color>
 
     <!-- endregion -->
 
