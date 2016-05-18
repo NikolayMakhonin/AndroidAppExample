@@ -8,8 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.nikolaymakhonin.android_app_example.R;
+import com.github.nikolaymakhonin.android_app_example.contracts.IHasTitle;
 
-public class GoogleMapFragment extends Fragment {
+public class GoogleMapFragment extends Fragment implements IHasTitle {
 
     private static final int LAYOUT = R.layout.fragment_google_map;
 
@@ -30,5 +31,10 @@ public class GoogleMapFragment extends Fragment {
     {
         _contentView = inflater.inflate(LAYOUT, container, false);
         return _contentView;
+    }
+
+    @Override
+    public String getTitle() {
+        return "GoogleMap";
     }
 }
