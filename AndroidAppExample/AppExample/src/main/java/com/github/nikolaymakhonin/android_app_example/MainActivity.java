@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import com.github.nikolaymakhonin.android_app_example.adapters.TapPagerFragmentAdapter;
+import com.github.nikolaymakhonin.android_app_example.adapters.TabsFragmentAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTabPager() {
-        TapPagerFragmentAdapter tabPageAdapter = new TapPagerFragmentAdapter(getSupportFragmentManager());
+        TabsFragmentAdapter tabPageAdapter = new TabsFragmentAdapter(getSupportFragmentManager());
         _viewPager.setAdapter(tabPageAdapter);
 
         _tabLayout.setupWithViewPager(_viewPager);

@@ -11,13 +11,13 @@ import com.github.nikolaymakhonin.android_app_example.fragments.GoogleMapFragmen
 import java.util.ArrayList;
 import java.util.List;
 
-public class TapPagerFragmentAdapter extends FragmentPagerAdapter {
+public class TabsFragmentAdapter extends FragmentPagerAdapter {
 
-    private static final String LOG_TAG = "TapPagerFragmentAdapter";
+    private static final String LOG_TAG = "TabsFragmentAdapter";
 
     private final List<Fragment> _pages = new ArrayList<>();
 
-    public TapPagerFragmentAdapter(FragmentManager fm) {
+    public TabsFragmentAdapter(FragmentManager fm) {
         super(fm);
         _pages.add(GoogleMapFragment.getInstance());
         _pages.add(GoogleMapFragment.getInstance());
