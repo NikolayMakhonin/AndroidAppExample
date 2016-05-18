@@ -15,9 +15,9 @@
     <!--<color name="colorSecondary">#3F51B5</color>-->
     <!--<color name="colorSecondaryDark">#303F9F</color>-->
 
-    <!-- Accent: Green [50, 200, 500] -->
-    <color name="accentLight">#E8F5E9</color>
-    <color name="accent">#A5D6A7</color>
+    <!-- Accent: Green [200, 400, 500] -->
+    <color name="accentLight">#A5D6A7</color>
+    <color name="accent">#66BB6A</color>
     <color name="accentDark">#4CAF50</color>
 
     <!-- Text: Light [87%, 54%, 38%, 12%] -->
@@ -51,6 +51,9 @@
     <color name="toolBar">@color/primaryDark</color>
     <color name="tabNavigationBar">@color/primary</color>
     <color name="windowBackground">@color/primaryLight</color>
+
+    <color name="fabNormal">@color/accentDark</color>
+    <color name="fabPressed">@color/accent</color>
 
     <!-- endregion -->
 
