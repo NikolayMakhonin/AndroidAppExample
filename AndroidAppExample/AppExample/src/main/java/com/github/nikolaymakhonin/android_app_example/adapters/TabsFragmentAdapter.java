@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.github.nikolaymakhonin.android_app_example.contracts.IHasTitle;
 import com.github.nikolaymakhonin.android_app_example.fragments.GoogleMapFragment;
+import com.github.nikolaymakhonin.android_app_example.fragments.InstagramFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,7 @@ public class TabsFragmentAdapter extends FragmentPagerAdapter {
     public TabsFragmentAdapter(FragmentManager fm) {
         super(fm);
         _pages.add(GoogleMapFragment.getInstance());
-        _pages.add(GoogleMapFragment.getInstance());
-        _pages.add(GoogleMapFragment.getInstance());
+        _pages.add(InstagramFragment.getInstance());
     }
 
     @Override
