@@ -1,5 +1,6 @@
 package com.github.nikolaymakhonin.android_app_example;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -9,8 +10,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.github.nikolaymakhonin.android_app_example.adapters.TabsFragmentAdapter;
+import com.yalantis.starwars.TilesFrameLayout;
 
 import rebus.header.view.HeaderCompactView;
 
@@ -18,11 +21,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_main;
 
-    private Toolbar        _toolbar;
-    private DrawerLayout   _drawerLayout;
-    private TabLayout      _tabLayout;
-    private ViewPager      _viewPager;
-    private NavigationView _navigationView;
+    private TilesFrameLayout     _tilesFrameLayout;
+    private Toolbar              _toolbar;
+    private DrawerLayout         _drawerLayout;
+    private TabLayout            _tabLayout;
+    private ViewPager            _viewPager;
+    private NavigationView       _navigationView;
+    private FloatingActionButton _floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,19 +39,38 @@ public class MainActivity extends AppCompatActivity {
         initControls();
     }
 
+    //region Life Cycle
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        _tilesFrameLayout.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        _tilesFrameLayout.onPause();
+    }
+
+    //endregion
+
     //region Init controls
 
     private void initControls() {
+        _tilesFrameLayout = (TilesFrameLayout) findViewById(R.id.tilesFrameLayout);
         _drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         _toolbar = (Toolbar) findViewById(R.id.toolbar);
         _navigationView = (NavigationView) findViewById(R.id.navigation);
         _tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         _viewPager = (ViewPager) findViewById(R.id.viewPager);
+        _floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
 
         initToolbar();
         initActionBarToggle();
         initNavigationView();
         initTabPager();
+        initFloatingButton();
     }
 
     private void initToolbar() {
@@ -87,17 +111,15 @@ public class MainActivity extends AppCompatActivity {
             _drawerLayout.closeDrawers()
         );
         _navigationView.addHeaderView(headerCompactView);
+    }
 
-        _navigationView.setNavigationItemSelectedListener(menuItem -> {
-//            _drawerLayout.closeDrawers();
-
-//            switch (menuItem.getItemId()) {
-//                case R.id.menu_navigation_item1:
-//                    //TODO: Implement menu item action
-//                    break;
-//            }
-
-            return true;
+    private void initFloatingButton() {
+        _floatingActionButton.setOnClickListener(view -> {
+            //startAnimation will call removeView(0)
+            View tempView = new View(this);
+            tempView.setVisibility(View.GONE);
+            _tilesFrameLayout.addView(tempView, 0);
+            _tilesFrameLayout.startAnimation();
         });
     }
 

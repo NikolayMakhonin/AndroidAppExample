@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.nikolaymakhonin.android_app_example"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -45,11 +45,15 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.0"
+    //see: http://mvnrepository.com/artifact/org.robolectric/robolectric
+    testCompile "org.robolectric:robolectric:3.1-rc1"
+    //support: javax/microedition/khronos/opengles/GL10 in robolectric
+    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.android.support:cardview-v7:23.3.0'
     //see: https://github.com/rebus007/HeaderView
     compile 'rebus:header-view:1.1.4'
+    compile 'com.yalantis:starwarstiles:0.1.1'
 }
 

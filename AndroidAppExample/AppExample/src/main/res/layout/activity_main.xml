@@ -1,69 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    android:id="@+id/drawerLayout"
-    tools:context="com.github.nikolaymakhonin.android_app_example.MainActivity"
+
+<com.yalantis.starwars.TilesFrameLayout
+    android:id="@+id/tilesFrameLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@color/windowBackground">
+    android:layout_height="match_parent"
+    app:sw_animationDuration="1500"
+    app:sw_numberOfTilesX="30">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/primaryDark"
-                app:titleTextColor="@color/textPrimaryLight"/>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabIndicatorColor="@color/iconActiveLight"
-                app:tabIndicatorHeight="6dp"
-                app:tabSelectedTextColor="@color/textPrimaryLight"
-                app:tabTextColor="@color/textSecondaryLight"
-                android:background="@color/primary"/>
-            
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_paw"
-            android:layout_gravity="bottom|right"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            app:backgroundTint="@color/fabNormal"
-            app:rippleColor="@color/fabPressed"
-            app:borderWidth="0dp"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp"
-            android:clickable="true"/>
-
-    </android.support.design.widget.CoordinatorLayout>
-
-    <android.support.design.widget.NavigationView
-        android:id="@+id/navigation"
-        android:layout_width="wrap_content"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
+        tools:context="com.github.nikolaymakhonin.android_app_example.MainActivity"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:menu="@menu/menu_navigation"/>
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/windowBackground">
 
-</android.support.v4.widget.DrawerLayout>
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/primaryDark"
+                    app:titleTextColor="@color/textPrimaryLight"/>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabIndicatorColor="@color/iconActiveLight"
+                    app:tabIndicatorHeight="6dp"
+                    app:tabSelectedTextColor="@color/textPrimaryLight"
+                    app:tabTextColor="@color/textSecondaryLight"
+                    android:background="@color/primary"/>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_paw"
+                android:layout_gravity="bottom|right"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                app:backgroundTint="@color/fabNormal"
+                app:rippleColor="@color/fabPressed"
+                app:borderWidth="0dp"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                android:clickable="true"/>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/navigation"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:menu="@menu/menu_navigation"/>
+
+    </android.support.v4.widget.DrawerLayout>
+
+</com.yalantis.starwars.TilesFrameLayout>
