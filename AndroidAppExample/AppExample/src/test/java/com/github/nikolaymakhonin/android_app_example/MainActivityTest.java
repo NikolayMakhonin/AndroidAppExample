@@ -2,8 +2,9 @@ package com.github.nikolaymakhonin.android_app_example;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.v4.content.res.ResourcesCompat;
+
+import com.github.nikolaymakhonin.android_app_example.activities.MainActivity;
 
 import org.junit.Before;
 import org.junit.Test;

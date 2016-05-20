@@ -24,7 +24,7 @@
             android:layout_alignParentTop="true"
             android:layout_above="@+id/contacts"
             android:scaleType="fitStart"
-            android:src="@drawable/icon_paw" />
+            android:src="@drawable/ic_paw" />
 
         <LinearLayout
             android:id="@+id/contacts"
@@ -37,7 +37,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Material Design for you Application"
+                android:text="@string/nav_bar_title"
                 android:textSize="14sp"
                 android:textColor="@color/textPrimaryLight"
                 android:layout_marginBottom="4dp"/>
@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="nikolay.makhonin@gmail.com"
+                android:text="@string/nav_bar_sub_title"
                 android:textSize="14sp"
                 android:textColor="@color/textPrimaryLight"/>
 

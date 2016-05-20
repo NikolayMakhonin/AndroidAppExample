@@ -4,4 +4,7 @@
     <string name="tab_title_google_maps">Google Maps</string>
     <string name="action_bar_menu_open">Open</string>
     <string name="action_bar_menu_close">Close</string>
+    <string name="pref_title">Settings</string>
+    <string name="nav_bar_title">Material Design for you Application</string>
+    <string name="nav_bar_sub_title">nikolay.makhonin@gmail.com</string>
 </resources>

@@ -1,5 +1,7 @@
-package com.github.nikolaymakhonin.android_app_example;
+package com.github.nikolaymakhonin.android_app_example.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -8,10 +10,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.github.nikolaymakhonin.android_app_example.R;
 import com.github.nikolaymakhonin.android_app_example.adapters.TabsFragmentAdapter;
 import com.yalantis.starwars.TilesFrameLayout;
 
@@ -111,6 +113,14 @@ public class MainActivity extends AppCompatActivity {
             _drawerLayout.closeDrawers()
         );
         _navigationView.addHeaderView(headerCompactView);
+        _navigationView.setNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.settings:
+                    startActivity(new Intent(getApplicationContext(), MainPreferenceActivity.class));
+                    break;
+            }
+            return true;
+        });
     }
 
     private void initFloatingButton() {

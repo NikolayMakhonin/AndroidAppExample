@@ -55,5 +55,13 @@ dependencies {
     //see: https://github.com/rebus007/HeaderView
     compile 'rebus:header-view:1.1.4'
     compile 'com.yalantis:starwarstiles:0.1.1'
+
+    //Material Preference:
+    //see: https://github.com/consp1racy/android-support-preference
+    compile 'net.xpece.android:support-preference:0.8.1'
+    // + color picker:
+    compile 'net.xpece.android:support-preference-color:0.8.0'
+    // + popup menu and spinner:
+    compile 'net.xpece.android:support-spinner:0.8.1'
 }
 

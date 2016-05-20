@@ -5,7 +5,7 @@
 
     <item android:id="@+id/toolbar_menu_search"
         android:title="@string/toolbar_title_search"
-        android:icon="@drawable/icon_magnify"
+        android:icon="@drawable/ic_magnify"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"/>
 </menu>

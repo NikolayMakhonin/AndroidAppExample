@@ -9,9 +9,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="true">
+
         <activity
-            android:name=".MainActivity"
-            android:theme="@style/AppTheme"
+            android:name=".activities.MainActivity"
+            android:theme="@style/AppDefault"
             >
             <intent-filter>
                 <!-- For Google Search: -->
@@ -28,6 +29,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.MainPreferenceActivity"
+            android:label="Settings"
+            android:theme="@style/AppDefault">
+        </activity>
+
     </application>
 
 </manifest>

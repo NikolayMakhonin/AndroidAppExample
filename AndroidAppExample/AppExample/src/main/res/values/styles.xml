@@ -18,6 +18,17 @@
 
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@color/windowBackground</item>
+
+        <!-- region Preferences -->
+
+        <!--<item name="alertDialogTheme">@style/AppTheme.Dialog.Alert</item>-->
+        <!--<item name="dialogTheme">@style/AppTheme.Dialog</item>-->
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Material</item>
+
+        <!--<item name="colorPreferenceStyle">@style/Preference.Material.DialogPreference.ColorPreference</item>-->
+
+        <!-- endregion -->
     </style>
 
 </resources>
