@@ -24,11 +24,26 @@
         <!--<item name="alertDialogTheme">@style/AppTheme.Dialog.Alert</item>-->
         <!--<item name="dialogTheme">@style/AppTheme.Dialog</item>-->
 
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Material</item>
-
         <!--<item name="colorPreferenceStyle">@style/Preference.Material.DialogPreference.ColorPreference</item>-->
 
         <!-- endregion -->
     </style>
 
+    <style name="PrefDefault" parent="AppDefault">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="preferenceTheme">@style/PrefStyle</item>
+    </style>
+
+    <style name="PrefStyle" parent="PreferenceThemeOverlay.Material">
+        <!-- see: android_sdk\extras\android\support\v7\preference\res\layout\*.xml -->
+        <item name="preferenceFragmentListStyle">@style/ListViewPrefs</item>
+    </style>
+
+    <style name="ListViewPrefs" parent="@android:style/Widget.ListView">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>

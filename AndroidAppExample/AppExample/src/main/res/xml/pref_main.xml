@@ -134,8 +134,8 @@
             android:title="@string/pref_title_sync_frequency"
             app:asp_iconPaddingEnabled="false"
             app:asp_menuMode="simple_menu"
-            app:subtitleTextColor="@color/primary"
-            app:titleTextColor="@color/primaryDark"/>
+            app:subtitleTextColor="@color/textHintDark"
+            app:titleTextColor="@color/textPrimaryDark"/>
 
         <!-- This preference simply launches an intent when selected. Use this UI sparingly, per
              design guidelines. -->

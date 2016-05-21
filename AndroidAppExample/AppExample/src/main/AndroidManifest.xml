@@ -33,7 +33,7 @@
         <activity
             android:name=".activities.MainPreferenceActivity"
             android:label="Settings"
-            android:theme="@style/AppDefault">
+            android:theme="@style/PrefDefault">
         </activity>
 
     </application>

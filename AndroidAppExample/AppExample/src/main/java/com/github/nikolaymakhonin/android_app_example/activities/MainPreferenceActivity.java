@@ -17,12 +17,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.github.nikolaymakhonin.android_app_example.R;
 import com.github.nikolaymakhonin.android_app_example.fragments.MainPreferenceFragment;
+import com.yalantis.starwars.TilesFrameLayout;
 
 import net.xpece.android.support.preference.ColorPreference;
 import net.xpece.android.support.preference.PreferenceScreenNavigationStrategy;
@@ -35,11 +37,12 @@ public class MainPreferenceActivity extends AppCompatActivity implements
     PreferenceScreenNavigationStrategy.ReplaceFragment.Callbacks,
     FragmentManager.OnBackStackChangedListener {
 
-    private MainPreferenceFragment _mainPreferenceFragment;
+    private MainPreferenceFragment                             _mainPreferenceFragment;
     private PreferenceScreenNavigationStrategy.ReplaceFragment _replaceFragmentStrategy;
-    private Toolbar _toolbar;
-    private TextSwitcher _titleSwitcher;
-    private CharSequence _title;
+    private Toolbar                                            _toolbar;
+    private TextSwitcher                                       _titleSwitcher;
+    private CharSequence                                       _title;
+    private TilesFrameLayout                                   _tilesFrameLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,7 +103,50 @@ public class MainPreferenceActivity extends AppCompatActivity implements
         _titleSwitcher.setOutAnimation(this, R.anim.abc_fade_out);
 
         //endregion
+
+        //region Close animation
+
+        _tilesFrameLayout = (TilesFrameLayout) findViewById(R.id.tilesFrameLayout);
+
+        //endregion
     }
+
+    //region Close animation
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        _tilesFrameLayout.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        _tilesFrameLayout.onPause();
+    }
+
+    @Override
+    public void finish() {
+        startFinishAnimation();
+    }
+
+    private boolean _finishAnimationStarted;
+
+    private void startFinishAnimation() {
+        if (_finishAnimationStarted) {
+            return;
+        }
+        _finishAnimationStarted = true;
+        _tilesFrameLayout.setOnAnimationFinishedListener(() -> {
+            super.finish();
+            overridePendingTransition(0, 0);
+        });
+
+        //Start destroy animation
+        _tilesFrameLayout.startAnimation();
+    }
+
+    //endregion
 
     //region ToolBar
 
