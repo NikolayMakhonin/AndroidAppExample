@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -21,12 +21,21 @@ import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.github.florent37.materialviewpager.header.HeaderDesign;
 import com.github.nikolaymakhonin.android_app_example.R;
 import com.github.nikolaymakhonin.android_app_example.adapters.TabsFragmentAdapter;
+import com.github.nikolaymakhonin.android_app_example.contracts.IActivityPermissionsCallback;
 import com.github.nikolaymakhonin.android_app_example.contracts.IFragmentWithHeader;
+import com.github.nikolaymakhonin.android_app_example.contracts.RequestPermissionsResult;
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.yalantis.starwars.TilesFrameLayout;
 
 import rebus.header.view.HeaderCompactView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends RxAppCompatActivity implements IActivityPermissionsCallback {
 
     private static final int LAYOUT = R.layout.activity_main;
 
@@ -195,6 +204,30 @@ public class MainActivity extends AppCompatActivity {
             _tilesFrameLayout.addView(tempView, 0);
             _tilesFrameLayout.startAnimation();
         });
+    }
+
+    //endregion
+
+    //region Permissions Handler
+
+    private final Subject<RequestPermissionsResult, RequestPermissionsResult> _requestPermissionsSubject = PublishSubject.create();
+
+    private final Observable<RequestPermissionsResult> _requestPermissionsObservable = _requestPermissionsSubject
+            .compose(bindUntilEvent(ActivityEvent.DESTROY))
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread());
+
+    @Override
+    public Observable<RequestPermissionsResult> getRequestPermissionsObservable() {
+        return _requestPermissionsObservable;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        _requestPermissionsSubject.onNext(new RequestPermissionsResult(requestCode, permissions, grantResults));
     }
 
     //endregion
