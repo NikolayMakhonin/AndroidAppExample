@@ -56,6 +56,9 @@
     <color name="fabNormal">@color/accentDark</color>
     <color name="fabPressed">@color/accent</color>
 
+    <color name="toolBarForBackground7">#455a64</color>
+    <color name="toolBarForBackground8">#827717</color>
+
     <!-- endregion -->
 
 </resources>

@@ -19,8 +19,8 @@ import com.github.nikolaymakhonin.android_app_example.contracts.IHasTitle;
 public class InstagramFragment extends Fragment implements IHasTitle, IFragmentWithHeader {
 
     private static final int LAYOUT = R.layout.fragment_instagram;
-    private static final int HEADER_COLOR = R.color.toolBar;
-    private static final int HEADER_DRAWABLE = R.drawable.navigation_header_background_1;
+    private static final int HEADER_COLOR = R.color.toolBarForBackground8;
+    private static final int HEADER_DRAWABLE = R.drawable.navigation_header_background_8;
 
     private View _contentView;
     private RecyclerView _recyclerView;

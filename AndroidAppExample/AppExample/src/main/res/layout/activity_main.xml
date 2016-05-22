@@ -66,7 +66,7 @@
                 app:viewpager_hideToolbarAndTitle="false"
                 app:viewpager_enableToolbarElevation="true"
                 app:viewpager_parallaxHeaderFactor="1.5"
-                app:viewpager_headerAdditionalHeight="10dp"
+                app:viewpager_headerAdditionalHeight="15dp"
                 app:viewpager_displayToolbarWhenSwipe="true"
                 app:viewpager_transparentToolbar="false"
                 app:viewpager_animatedHeaderImage="true"
