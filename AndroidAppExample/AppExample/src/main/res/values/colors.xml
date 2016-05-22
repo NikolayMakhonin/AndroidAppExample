@@ -51,6 +51,7 @@
     <color name="toolBar">@color/primaryDark</color>
     <color name="tabNavigationBar">@color/primary</color>
     <color name="windowBackground">@color/primaryLight</color>
+    <color name="drawerArrowColor">@color/primaryBright</color>
 
     <color name="fabNormal">@color/accentDark</color>
     <color name="fabPressed">@color/accent</color>

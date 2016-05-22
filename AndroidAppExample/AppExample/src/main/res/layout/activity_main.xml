@@ -22,34 +22,56 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.design.widget.AppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <!--<android.support.design.widget.AppBarLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@color/primaryDark"
-                    app:titleTextColor="@color/textPrimaryLight"/>
+                <!--<android.support.v7.widget.Toolbar-->
+                    <!--android:id="@+id/toolbar"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="?attr/actionBarSize"-->
+                    <!--android:background="@color/primaryDark"-->
+                    <!--app:titleTextColor="@color/textPrimaryLight"/>-->
 
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:tabIndicatorColor="@color/iconActiveLight"
-                    app:tabIndicatorHeight="6dp"
-                    app:tabSelectedTextColor="@color/textPrimaryLight"
-                    app:tabTextColor="@color/textSecondaryLight"
-                    android:background="@color/primary"/>
+                <!--<android.support.design.widget.TabLayout-->
+                    <!--android:id="@+id/tabLayout"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--app:tabIndicatorColor="@color/iconActiveLight"-->
+                    <!--app:tabIndicatorHeight="6dp"-->
+                    <!--app:tabSelectedTextColor="@color/textPrimaryLight"-->
+                    <!--app:tabTextColor="@color/textSecondaryLight"-->
+                    <!--android:background="@color/primary"/>-->
 
-            </android.support.design.widget.AppBarLayout>
+            <!--</android.support.design.widget.AppBarLayout>-->
 
-            <android.support.v4.view.ViewPager
+            <!--<android.support.v4.view.ViewPager-->
+                <!--android:id="@+id/viewPager"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"/>-->
+
+            <com.github.florent37.materialviewpager.MaterialViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                app:viewpager_logo="@layout/header_logo"
+                app:viewpager_pagerTitleStrip="@layout/material_view_pager_pagertitlestrip_newstand"
+                app:viewpager_logoMarginTop="100dp"
+                app:viewpager_color="@color/colorPrimary"
+                app:viewpager_headerHeight="200dp"
+                app:viewpager_headerAlpha="1.0"
+                app:viewpager_imageHeaderDarkLayerAlpha="0.2"
+                app:viewpager_hideLogoWithFade="false"
+                app:viewpager_hideToolbarAndTitle="false"
+                app:viewpager_enableToolbarElevation="true"
+                app:viewpager_parallaxHeaderFactor="1.5"
+                app:viewpager_headerAdditionalHeight="10dp"
+                app:viewpager_displayToolbarWhenSwipe="true"
+                app:viewpager_transparentToolbar="false"
+                app:viewpager_animatedHeaderImage="true"
+
+                />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/floatingActionButton"

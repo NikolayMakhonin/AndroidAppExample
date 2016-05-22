@@ -2,7 +2,7 @@ package com.github.nikolaymakhonin.android_app_example.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.github.nikolaymakhonin.android_app_example.contracts.IHasTitle;
@@ -12,7 +12,7 @@ import com.github.nikolaymakhonin.android_app_example.fragments.InstagramFragmen
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabsFragmentAdapter extends FragmentPagerAdapter {
+public class TabsFragmentAdapter extends FragmentStatePagerAdapter {
 
     private static final String LOG_TAG = "TabsFragmentAdapter";
 

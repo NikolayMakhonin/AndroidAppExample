@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidAppExample</string>
+    <string name="app_name">Material Design</string>
     <string name="toolbar_title_search">Search</string>
     <string name="tab_title_google_maps">Google Maps</string>
     <string name="action_bar_menu_open">Open</string>
