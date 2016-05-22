@@ -134,7 +134,7 @@ public class GoogleMapFragment extends Fragment implements IHasTitle, IFragmentW
         Log.e(LOG_TAG, "Error maps initialize, errorCode = " + errorCode);
 
         // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(22.277872, 114.1762067), 16.45f); //Hong-Kong
         _map.animateCamera(cameraUpdate);
 
     }
