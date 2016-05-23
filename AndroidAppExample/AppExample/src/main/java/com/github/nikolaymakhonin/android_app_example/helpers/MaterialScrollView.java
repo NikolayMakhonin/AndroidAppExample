@@ -3,10 +3,8 @@ package com.github.nikolaymakhonin.android_app_example.helpers;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.github.florent37.materialviewpager.MaterialViewPagerAnimator;
-import com.github.florent37.materialviewpager.MaterialViewPagerHeader;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 
@@ -53,26 +51,17 @@ public class MaterialScrollView extends ObservableScrollView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isMaxScroll()) {
-            return false;
-        }
-        return super.onTouchEvent(event);
+        return onMouseEvent(event);
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (isMaxScroll()) {
-            return false;
-        }
-        return super.onInterceptTouchEvent(ev);
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        return onMouseEvent(event);
     }
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        if (isMaxScroll()) {
-            return false;
-        }
-        return super.onGenericMotionEvent(event);
+        return onMouseEvent(event);
     }
 
     @Override
@@ -91,21 +80,29 @@ public class MaterialScrollView extends ObservableScrollView {
         return scrollY >= scrollMax;
     }
 
-//    @Override
-//    public void scrollVerticallyTo(int y) {
-//        int prevHeaderHeight = getHeaderHeight();
-//        int prevScrollY = getScrollY();
-//
-//        super.scrollVerticallyTo(y);
-//
-//        int newHeaderHeight = getHeaderHeight();
-//        int newScrollY = getScrollY();
-//
-//        int deltaHeight = newHeaderHeight - prevHeaderHeight;
-//        int deltaScroll = newScrollY - prevScrollY;
-//
-//        if (deltaHeight != deltaScroll) {
-//            super.scrollVerticallyTo(deltaScroll - deltaHeight);
-//        }
-//    }
+    private float _lastMotionX;
+    private float _lastMotionY;
+
+    private boolean onMouseEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                float x = event.getX();
+                float y = event.getY();
+
+                float dy = y - _lastMotionY;
+                if (dy < 0) {
+                    scrollVerticallyTo(Math.round(getCurrentScrollY() - dy));
+                }
+
+                _lastMotionX = x;
+                _lastMotionY = y;
+                break;
+            case MotionEvent.ACTION_DOWN:
+                _lastMotionX = event.getX();
+                _lastMotionY = event.getY();
+                break;
+        }
+
+        return false;
+    }
 }
