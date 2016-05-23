@@ -29,6 +29,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /** Docs: <a href="https://developers.google.com/places/android-api/start?hl=ru#connect-client">developers.google.com introduce</a> */
 
@@ -86,16 +87,17 @@ public class GoogleMapFragment extends Fragment implements IHasTitle, IFragmentW
         @Nullable Bundle savedInstanceState)
     {
         _contentView = inflater.inflate(LAYOUT, container, false);
-        initControls();
-        initGoogleApiClient();
+        initControls(savedInstanceState);
+//        initGoogleApiClient();
 
         return _contentView;
     }
 
-    private void initControls() {
+    private void initControls(@Nullable Bundle savedInstanceState) {
         _scrollView = (ObservableScrollView) _contentView.findViewById(R.id.scrollView);
 
         initScrollView();
+        initMapView(savedInstanceState);
     }
 
     private void initScrollView() {
@@ -109,33 +111,84 @@ public class GoogleMapFragment extends Fragment implements IHasTitle, IFragmentW
         _mapView = (MapView) _contentView.findViewById(R.id.mapView);
         _mapView.onCreate(savedInstanceState);
         _mapView.getMapAsync(this);
+
+        final View.OnLayoutChangeListener[] layoutChangeListener = new View.OnLayoutChangeListener[1];
+        layoutChangeListener[0] = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            _scrollView.removeOnLayoutChangeListener(layoutChangeListener[0]);
+            initMapViewHeight();
+        };
+        _scrollView.addOnLayoutChangeListener(layoutChangeListener[0]);
+    }
+
+    private void initMapViewHeight() {
+//        ViewGroup.LayoutParams layoutParams = _mapView.getLayoutParams();
+//        layoutParams.height = _scrollView.getHeight() - Math.round(MaterialViewPagerHelper.getAnimator(getContext()).scrollMax);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        _mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        _mapView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        _mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        _mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        _mapView.onLowMemory();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Gets to GoogleMap from the MapView and does initialization stuff
         _map = googleMap;
-        _map.getUiSettings().setMyLocationButtonEnabled(false);
+//        _map.getUiSettings().setMyLocationButtonEnabled(false);
+        //
+        //        PermissionsHelper.requestPermissions(getActivity(), new String[] {
+        //            Manifest.permission.ACCESS_FINE_LOCATION,
+        //            Manifest.permission.ACCESS_COARSE_LOCATION
+        //        })
+        //            .subscribe(granted -> {
+        //                if (granted) {
+        //                    //noinspection MissingPermission
+        //                    _map.setMyLocationEnabled(true);
+        //                }
+        //            });
 
-        PermissionsHelper.requestPermissions(getActivity(), new String[] {
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        })
-            .subscribe(granted -> {
-                if (granted) {
-                    //noinspection MissingPermission
-                    _map.setMyLocationEnabled(true);
-                }
-            });
+//        LatLng sydney = new LatLng(-34, 151);
+//        _map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        _map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        // Add a marker in Hong-Kong and move the camera
+        LatLng hongKong = new LatLng(22.277872, 114.1762067);
+        _map.addMarker(new MarkerOptions().position(hongKong).title("Hong-Kong"));
+        _map.moveCamera(CameraUpdateFactory.newLatLngZoom(hongKong, 16.45f));
 
 
-        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
-        int errorCode = MapsInitializer.initialize(getActivity());
-        Log.e(LOG_TAG, "Error maps initialize, errorCode = " + errorCode);
-
-        // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(22.277872, 114.1762067), 16.45f); //Hong-Kong
-        _map.animateCamera(cameraUpdate);
+//        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
+//        int errorCode = MapsInitializer.initialize(getActivity());
+//        Log.e(LOG_TAG, "Error maps initialize, errorCode = " + errorCode);
+//
+//        // Updates the location and zoom of the MapView
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(22.277872, 114.1762067), 16.45f); //Hong-Kong
+//        _map.animateCamera(cameraUpdate);
 
     }
 
@@ -165,12 +218,16 @@ public class GoogleMapFragment extends Fragment implements IHasTitle, IFragmentW
     @Override
     public void onStart() {
         super.onStart();
-        _googleApiClient.connect();
+        if (_googleApiClient != null) {
+            _googleApiClient.connect();
+        }
     }
 
     @Override
     public void onStop() {
-        _googleApiClient.disconnect();
+        if (_googleApiClient != null) {
+            _googleApiClient.disconnect();
+        }
         super.onStop();
     }
 
@@ -219,7 +276,7 @@ public class GoogleMapFragment extends Fragment implements IHasTitle, IFragmentW
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        initMapView(bundle);
+
     }
 
     @Override
