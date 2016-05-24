@@ -1,6 +1,5 @@
 package com.github.nikolaymakhonin.android_app_example.views;
 
-import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -109,16 +108,6 @@ public class MaterialScrollView extends ObservableScrollView {
         return onMouseEvent(event);
     }
 
-//    @Override
-//    protected void onScrollChanged(int x, int y, int oldX, int oldY) {
-//        super.onScrollChanged(x, y, oldX, oldY);
-//
-//        _currentScrollY = y;
-//        scrollVerticallyTo(_currentScrollY);
-//        _contentHeightRequested = false;
-//        updateContentHeight();
-//    }
-
     private int _currentScrollY;
 
     @Override
@@ -157,23 +146,6 @@ public class MaterialScrollView extends ObservableScrollView {
         _contentHeightRequested = false;
         updateContentHeight();
     }
-
-//    @Override
-//    public void scrollVerticallyTo(int y) {
-//        int scrollMax = getScrollMax();
-//
-//        if (y > scrollMax) {
-//            y = scrollMax;
-//        }
-//        if (y < 0) {
-//            y = 0;
-//        }
-//        if (y == _currentScrollY) {
-//            return;
-//        }
-//        Log.i(LOG_TAG, String.format("scrollVerticallyTo(%s), scrollMax=%s", y, scrollMax));
-//        super.scrollVerticallyTo(y);
-//    }
 
     private float _lastMotionX;
     private float _lastMotionY;
