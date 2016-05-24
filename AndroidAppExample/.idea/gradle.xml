@@ -9,6 +9,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/AppExample" />
+            <option value="$PROJECT_DIR$/CommonDI" />
+            <option value="$PROJECT_DIR$/Utils" />
             <option value="$PROJECT_DIR$/testmaps" />
           </set>
         </option>
@@ -16,6 +18,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/AppExample" />
+            <option value="$PROJECT_DIR$/CommonDI" />
+            <option value="$PROJECT_DIR$/Utils" />
             <option value="$PROJECT_DIR$/testmaps" />
           </set>
         </option>

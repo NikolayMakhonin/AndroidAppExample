@@ -1,1 +1,1 @@
-include ':AppExample', ':testmaps'
+include ':AppExample', ':testmaps', ':CommonDI', ':Utils'

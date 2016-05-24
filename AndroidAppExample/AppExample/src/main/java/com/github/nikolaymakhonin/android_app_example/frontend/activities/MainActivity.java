@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.crashlytics.android.Crashlytics;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.github.florent37.materialviewpager.header.HeaderDesign;
 import com.github.nikolaymakhonin.android_app_example.R;
@@ -28,6 +29,7 @@ import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.yalantis.starwars.TilesFrameLayout;
 
+import io.fabric.sdk.android.Fabric;
 import rebus.header.view.HeaderCompactView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -57,6 +59,7 @@ public class MainActivity extends RxAppCompatActivity implements IActivityPermis
         setTheme(R.style.AppDefault);
 
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(LAYOUT);
 
         initControls();
