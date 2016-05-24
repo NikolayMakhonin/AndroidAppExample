@@ -15,16 +15,17 @@
         android:fullBackupContent="true">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".frontend.activities.MainActivity"
             android:theme="@style/AppDefault"
             >
             <intent-filter>
                 <!-- For Google Search: -->
                 <!-- http://developer.android.com/training/app-indexing/deep-linking.html -->
                 <!-- https://developers.google.com/app-indexing/android/app#add-intent-filters-for-http-urls -->
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
                 <data android:scheme="https"
                     android:host="www.github.com"
                     android:pathPrefix="/NikolayMakhonin/AndroidAppExample" />
@@ -35,7 +36,7 @@
         </activity>
 
         <activity
-            android:name=".activities.MainPreferenceActivity"
+            android:name=".frontend.activities.MainPreferenceActivity"
             android:label="Settings"
             android:theme="@style/AppDefault.Preference">
         </activity>

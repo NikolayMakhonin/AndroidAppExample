@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.views;
+package com.github.nikolaymakhonin.android_app_example.frontend.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

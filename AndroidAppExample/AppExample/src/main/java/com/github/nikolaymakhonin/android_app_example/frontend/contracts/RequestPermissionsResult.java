@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.contracts;
+package com.github.nikolaymakhonin.android_app_example.frontend.contracts;
 
 import android.content.pm.PackageManager;
 

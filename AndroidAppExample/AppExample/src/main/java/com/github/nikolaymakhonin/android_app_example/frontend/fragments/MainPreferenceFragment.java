@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.fragments;
+package com.github.nikolaymakhonin.android_app_example.frontend.fragments;
 
 import android.os.Bundle;
 import android.support.v7.preference.XpPreferenceFragment;

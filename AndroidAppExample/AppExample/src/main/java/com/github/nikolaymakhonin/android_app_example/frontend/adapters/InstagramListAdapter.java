@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.adapters;
+package com.github.nikolaymakhonin.android_app_example.frontend.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.CardView;

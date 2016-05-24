@@ -1,13 +1,13 @@
-package com.github.nikolaymakhonin.android_app_example.adapters;
+package com.github.nikolaymakhonin.android_app_example.frontend.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
-import com.github.nikolaymakhonin.android_app_example.contracts.IHasTitle;
-import com.github.nikolaymakhonin.android_app_example.fragments.GoogleMapFragment;
-import com.github.nikolaymakhonin.android_app_example.fragments.InstagramFragment;
+import com.github.nikolaymakhonin.android_app_example.frontend.contracts.IHasTitle;
+import com.github.nikolaymakhonin.android_app_example.frontend.fragments.GoogleMapFragment;
+import com.github.nikolaymakhonin.android_app_example.frontend.fragments.InstagramFragment;
 
 import java.util.ArrayList;
 import java.util.List;

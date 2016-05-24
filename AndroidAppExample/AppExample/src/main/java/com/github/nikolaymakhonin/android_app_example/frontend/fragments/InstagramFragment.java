@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.fragments;
+package com.github.nikolaymakhonin.android_app_example.frontend.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.github.nikolaymakhonin.android_app_example.R;
-import com.github.nikolaymakhonin.android_app_example.adapters.InstagramListAdapter;
-import com.github.nikolaymakhonin.android_app_example.contracts.IFragmentWithHeader;
-import com.github.nikolaymakhonin.android_app_example.contracts.IHasTitle;
+import com.github.nikolaymakhonin.android_app_example.frontend.adapters.InstagramListAdapter;
+import com.github.nikolaymakhonin.android_app_example.frontend.contracts.IFragmentWithHeader;
+import com.github.nikolaymakhonin.android_app_example.frontend.contracts.IHasTitle;
 
 public class InstagramFragment extends Fragment implements IHasTitle, IFragmentWithHeader {
 

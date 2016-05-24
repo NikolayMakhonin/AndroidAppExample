@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 
-import com.github.nikolaymakhonin.android_app_example.activities.MainActivity;
+import com.github.nikolaymakhonin.android_app_example.frontend.activities.MainActivity;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.activities;
+package com.github.nikolaymakhonin.android_app_example.frontend.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -20,10 +20,10 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.github.florent37.materialviewpager.header.HeaderDesign;
 import com.github.nikolaymakhonin.android_app_example.R;
-import com.github.nikolaymakhonin.android_app_example.adapters.TabsFragmentAdapter;
-import com.github.nikolaymakhonin.android_app_example.contracts.IActivityPermissionsCallback;
-import com.github.nikolaymakhonin.android_app_example.contracts.IFragmentWithHeader;
-import com.github.nikolaymakhonin.android_app_example.contracts.RequestPermissionsResult;
+import com.github.nikolaymakhonin.android_app_example.frontend.adapters.TabsFragmentAdapter;
+import com.github.nikolaymakhonin.android_app_example.frontend.contracts.IActivityPermissionsCallback;
+import com.github.nikolaymakhonin.android_app_example.frontend.contracts.IFragmentWithHeader;
+import com.github.nikolaymakhonin.android_app_example.frontend.contracts.RequestPermissionsResult;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.yalantis.starwars.TilesFrameLayout;

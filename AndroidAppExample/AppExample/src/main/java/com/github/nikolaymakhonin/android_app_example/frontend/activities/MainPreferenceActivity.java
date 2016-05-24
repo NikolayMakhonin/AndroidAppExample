@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.activities;
+package com.github.nikolaymakhonin.android_app_example.frontend.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,15 +15,12 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.github.nikolaymakhonin.android_app_example.R;
-import com.github.nikolaymakhonin.android_app_example.fragments.MainPreferenceFragment;
+import com.github.nikolaymakhonin.android_app_example.frontend.fragments.MainPreferenceFragment;
 import com.yalantis.starwars.TilesFrameLayout;
 
 import net.xpece.android.support.preference.ColorPreference;
