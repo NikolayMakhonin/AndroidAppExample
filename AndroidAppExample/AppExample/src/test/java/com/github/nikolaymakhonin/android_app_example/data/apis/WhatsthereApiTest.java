@@ -1,8 +1,5 @@
 package com.github.nikolaymakhonin.android_app_example.data.apis;
 
-import android.content.Context;
-
-import com.github.nikolaymakhonin.android_app_example.R;
 import com.github.nikolaymakhonin.android_app_example.TestBase;
 import com.github.nikolaymakhonin.android_app_example.data.apis.whats_there.WhatsThereApi;
 import com.github.nikolaymakhonin.android_app_example.di.components.ServiceComponent;
@@ -11,18 +8,13 @@ import com.github.nikolaymakhonin.android_app_example.di.factories.ComponentsFac
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
-
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-
-import static org.mockito.Mockito.*;
-
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 //docs: https://developer.android.com/training/testing/unit-testing/local-unit-tests.html
 @RunWith(MockitoJUnitRunner.class)
