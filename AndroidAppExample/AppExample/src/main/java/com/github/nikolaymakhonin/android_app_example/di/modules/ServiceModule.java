@@ -8,7 +8,8 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(includes = {
-    ServiceModuleBase.class
+    ServiceModuleBase.class,
+    WebApiModule.class
 })
 public class ServiceModule {
 
