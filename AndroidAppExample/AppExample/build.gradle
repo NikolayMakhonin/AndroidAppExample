@@ -123,9 +123,6 @@ dependencies {
 
     compile project(':CommonDI')
 
-    //see: http://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-
     //endregion
 }
 

@@ -8,6 +8,7 @@ import com.github.nikolaymakhonin.android_app_example.di.factories.ComponentsFac
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.matchers.GreaterThan;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,7 @@ public class WhatsThereApiTest extends TestBase {
             .first()
             .subscribe(responseInstagram -> {
                 assertThat("Response code != 200", responseInstagram.meta.code, is(200));
+                assertThat("Posts count <= 10", responseInstagram.data.length, is(new GreaterThan(10)));
                 _lock.countDown();
             });
 

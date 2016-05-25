@@ -210,9 +210,7 @@ public class Log {
     //region Log event
 
     public static void onLog(LogEventInfo logInfo) {
-        if (_logSubject.hasObservers()) {
-            _logSubject.onNext(logInfo);
-        }
+        _logSubject.onNext(logInfo);
     }
 
     public static void onLog(int priority, String tag, String msg, Throwable tr) {

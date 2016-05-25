@@ -4,6 +4,7 @@ import com.github.nikolaymakhonin.utils.time.DateTime;
 import com.github.nikolaymakhonin.utils.time.TimeSpan;
 import com.github.nikolaymakhonin.utils.contracts.delegates.EqualityComparator;
 
+import java.net.URI;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -261,7 +262,13 @@ public class CompareUtils {
         if (o1 == null || o2 == null) { return false; }
         return o1.equals(o2);
     }
-    
+
+    public static boolean Equals(final URI o1, final URI o2) {
+        if (o1 == o2) { return true; }
+        if (o1 == null || o2 == null) { return false; }
+        return o1.equals(o2);
+    }
+
     public static <T> boolean EqualsObjects(final T o1, final T o2) {
         if (o1 == o2) { return true; }
         if (o1 == null || o2 == null) { return false; }

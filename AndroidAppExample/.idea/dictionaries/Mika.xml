@@ -2,6 +2,7 @@
   <dictionary name="Mika">
     <words>
       <w>cafbc</w>
+      <w>decapitalize</w>
       <w>genymotion</w>
       <w>gson</w>
       <w>guid</w>
@@ -14,7 +15,9 @@
       <w>opengles</w>
       <w>retrolambda</w>
       <w>robolectric</w>
+      <w>squareup</w>
       <w>stackoverflow</w>
+      <w>unsubscribe</w>
     </words>
   </dictionary>
 </component>
