@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/AppExample/AppExample.iml" filepath="$PROJECT_DIR$/AppExample/AppExample.iml" />
       <module fileurl="file://$PROJECT_DIR$/CommonDI/CommonDI.iml" filepath="$PROJECT_DIR$/CommonDI/CommonDI.iml" />
       <module fileurl="file://$PROJECT_DIR$/Utils/Utils.iml" filepath="$PROJECT_DIR$/Utils/Utils.iml" />
-      <module fileurl="file://$PROJECT_DIR$/testmaps/testmaps.iml" filepath="$PROJECT_DIR$/testmaps/testmaps.iml" />
     </modules>
   </component>
 </project>
