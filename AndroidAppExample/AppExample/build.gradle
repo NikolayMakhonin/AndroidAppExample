@@ -58,10 +58,6 @@ dependencies {
     //region Tests
 
     testCompile 'junit:junit:4.12'
-    //see: http://mvnrepository.com/artifact/org.robolectric/robolectric
-    testCompile "org.robolectric:robolectric:3.1-rc1"
-    //support: javax/microedition/khronos/opengles/GL10 in robolectric
-    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     //see: https://github.com/mockito/mockito
     //see: https://developer.android.com/training/testing/unit-testing/local-unit-tests.html
     testCompile 'org.mockito:mockito-core:1.10.19'
@@ -78,7 +74,7 @@ dependencies {
     compile 'rebus:header-view:1.1.4'
 
     //Destroy window animation:
-    //see:
+    //see: https://github.com/Yalantis/StarWars.Android
     compile 'com.yalantis:starwarstiles:0.1.1'
 
     //Material Preference:

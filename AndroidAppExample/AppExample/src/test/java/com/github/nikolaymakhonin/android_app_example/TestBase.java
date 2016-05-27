@@ -1,19 +1,12 @@
 package com.github.nikolaymakhonin.android_app_example;
 
 import android.content.Context;
-import android.net.Uri;
-
-import com.github.nikolaymakhonin.android_app_example.di.components.ServiceComponent;
-import com.github.nikolaymakhonin.android_app_example.di.factories.ComponentsFactory;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -32,7 +25,7 @@ public abstract class TestBase {
     /**
      * Countdown latch
      */
-    protected CountDownLatch _lock = new CountDownLatch(1);
+    protected final CountDownLatch _lock = new CountDownLatch(1);
 
     @Mock
     public Context _mockContext;

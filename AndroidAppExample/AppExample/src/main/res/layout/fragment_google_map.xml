@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
 
-    <com.github.nikolaymakhonin.android_app_example.frontend.views.MaterialScrollView
+    <com.github.nikolaymakhonin.android_app_example.ui.views.controls.MaterialScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,6 +26,6 @@
                 android:layout_height="match_parent"/>
 
         </LinearLayout>
-    </com.github.nikolaymakhonin.android_app_example.frontend.views.MaterialScrollView>
+    </com.github.nikolaymakhonin.android_app_example.ui.views.controls.MaterialScrollView>
 
 </RelativeLayout>

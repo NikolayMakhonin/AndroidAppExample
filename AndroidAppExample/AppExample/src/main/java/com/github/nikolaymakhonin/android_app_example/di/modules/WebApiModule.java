@@ -3,7 +3,6 @@ package com.github.nikolaymakhonin.android_app_example.di.modules;
 import com.github.nikolaymakhonin.android_app_example.data.apis.converters.CombineConverterFactory;
 import com.github.nikolaymakhonin.android_app_example.data.apis.whats_there.WhatsThereApi;
 import com.github.nikolaymakhonin.common_di.scopes.PerService;
-import com.github.nikolaymakhonin.logger.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
@@ -11,8 +10,6 @@ import com.google.gson.JsonDeserializer;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
 
 import javax.inject.Named;

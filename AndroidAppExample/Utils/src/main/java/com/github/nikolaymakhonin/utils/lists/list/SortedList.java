@@ -21,7 +21,7 @@ import rx.subjects.Subject;
 
 public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollection {
 
-    private String LOG_TAG = "SortedList";
+    private static final String LOG_TAG = "SortedList";
     private final static float RESIZE_COEF = 2.0f;
     private final static float RESIZE_COEF_2 = RESIZE_COEF * RESIZE_COEF;
     private int _count;
