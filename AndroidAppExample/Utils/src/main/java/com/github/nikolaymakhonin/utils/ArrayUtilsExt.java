@@ -15,6 +15,7 @@ public class ArrayUtilsExt {
     }
 
     public static <T> T[] createArray(Class<? extends T[]> itemType, int allocateLength) {
+        //noinspection RedundantCast
         T[] array = ((Object) itemType == (Object) Object[].class)
             ? (T[]) new Object[allocateLength]
             : (T[]) Array.newInstance(itemType.getComponentType(), allocateLength);

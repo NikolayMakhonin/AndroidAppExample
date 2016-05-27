@@ -23,37 +23,61 @@ import rx.functions.Func1;
 
 public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TValue>, ICollectionChanged<Map.Entry<TKey, TValue>> {
     private static final String LOG_TAG = "SortDict";
+    private final SortedList<Entry<HashItem<TKey>, TValue>> _items;
+    private       Set<TKey>                                 _keys;
+    private       Set<TValue>                               _values;
+    private final Func1<TKey, HashItem<TKey>>               _createHashItem;
+
+    //region Locker
 
     @Override
     public Object Locker() {
         return _items.Locker();
     }
-    
-    private final SortedList<Entry<HashItem<TKey>, TValue>> _items;
-    private       Set<TKey>                                 _keys;
-    private       Set<TValue>                               _values;
-    private final Func1<TKey, HashItem<TKey>>               _createHashItem;
-    
-    Comparator<TKey> _Comparator;
+
+    //endregion
+
+    //region Settings
+
+    public boolean IsReadOnly() {
+        return false;
+    }
+
+    //endregion
+
+    //region Comparator
+
+    private Comparator<TKey> _comparator;
     
     public Comparator<TKey> getComparator() {
-        return _Comparator;
+        return _comparator;
     }
     
     public void setComparator(final Comparator<TKey> value) {
-        _Comparator = value;
+        _comparator = value;
     }
     
-    EqualityComparator<TKey> _EqualityComparator;
+    private EqualityComparator<TKey> _equalityComparator;
     
     public EqualityComparator<TKey> getEqualityComparator() {
-        return _EqualityComparator;
+        return _equalityComparator;
     }
     
     public void setEqualityComparator(final EqualityComparator<TKey> value) {
-        _EqualityComparator = value;
+        _equalityComparator = value;
     }
-    
+
+    private final Comparator<Map.Entry<HashItem<TKey>, TValue>> _mapEntryComparator = new Comparator<Map.Entry<HashItem<TKey>, TValue>>() {
+        @Override
+        public int compare(final Map.Entry<HashItem<TKey>, TValue> item1, final Map.Entry<HashItem<TKey>, TValue> item2) {
+            return (item1.getKey()).compareTo(item2.getKey(), _comparator, _equalityComparator);
+        }
+    };
+
+    //endregion
+
+    //region HashItems
+
     public Func1<TKey, Integer> _GetKeyHashCode;
     
     public Func1<TKey, Integer> getGetKeyHashCode() {
@@ -63,14 +87,28 @@ public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TVal
     public void setGetKeyHashCode(final Func1<TKey, Integer> value) {
         _GetKeyHashCode = value;
     }
-    
-    private final Comparator<Map.Entry<HashItem<TKey>, TValue>> mapEntryComparator = new Comparator<Map.Entry<HashItem<TKey>, TValue>>() {
-        @Override
-        public int compare(final Map.Entry<HashItem<TKey>, TValue> item1, final Map.Entry<HashItem<TKey>, TValue> item2) {
-            return (item1.getKey()).compareTo(item2.getKey(), _Comparator, _EqualityComparator);
+
+    private HashItem<TKey> createHashItem(final TKey key) {
+        if (_createHashItem != null) { return _createHashItem.call(key); }
+        return new CustomHashCodeItem<>(key, _GetKeyHashCode);
+    }
+
+    private static Object[] castHashItems(Object[] items) {
+        if (items == null) {
+            return null;
         }
-    };
-    
+        int count = items.length;
+        Object[] result = new Object[count];
+        for (int i = 0; i < count; i++) {
+            result[i] = ((HashItem)items[i]).Value();
+        }
+        return result;
+    }
+
+    //endregion
+
+    //region Constructors
+
     public SortDict() {
         this(null, null);
     }
@@ -94,89 +132,17 @@ public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TVal
     
     private SortDict(final Comparator<TKey> Comparator, final EqualityComparator<TKey> equalityComparator,
         final Func1<TKey, Integer> getKeyHashCode, final Func1<TKey, HashItem<TKey>> createHashItem) {
-        _Comparator = Comparator;
-        _EqualityComparator = equalityComparator;
+        _comparator = Comparator;
+        _equalityComparator = equalityComparator;
         _GetKeyHashCode = getKeyHashCode;
         _createHashItem = createHashItem;
-        _items = new SortedList<>(true, true, mapEntryComparator);
-    }
-    
-    private Map.Entry<TKey, TValue>[] convertKeyValuePairArray(final Object[] items) {
-        if (items == null) { return null; }
-        final int length = items.length;
-        final Map.Entry<TKey, TValue>[] convertItems = new SimpleEntry[length];
-        for (int i = 0; i < length; i++) {
-            final Map.Entry<HashItem<TKey>, TValue> item = (Map.Entry) items[i];
-            convertItems[i] = new SimpleEntry(item.getKey(), item.getValue());
-        }
-        return convertItems;
+        _items = new SortedList<>(true, true, _mapEntryComparator);
     }
 
-    private HashItem<TKey> createHashItem(final TKey key) {
-        if (_createHashItem != null) { return _createHashItem.call(key); }
-        return new CustomHashCodeItem<>(key, _GetKeyHashCode);
-    }
-    
-    private TValue putPrivate(final TKey key, final TValue value) {
-        _items.add(new SimpleEntry<>(createHashItem(key), value));
-        _keys = null;
-        _values = null;
-        return value;
-    }
-    
-    @Override
-    public boolean containsKey(final Object key) {
-        return ContainsKey((TKey) key);
-    }
-    
-    @Override
-    public boolean ContainsKey(final TKey key) {
-        return _items.Contains(new SimpleEntry<>(createHashItem(key), null));
-    }
-    
-    private Set<TKey> getKeys() {
-        final Object[] keys = new Object[_items.size()];
-        int i = 0;
-        for (final Map.Entry<HashItem<TKey>, TValue> item : _items) {
-            keys[i++] = item.getKey().Value();
-        }
-        return new SortedList(false, false, keys);
-    }
-    
-    private Set<TValue> getValues() {
-        final Object[] values = new Object[_items.size()];
-        int i = 0;
-        for (final Map.Entry<HashItem<TKey>, TValue> item : _items) {
-            values[i++] = item.getValue();
-        }
-        return new SortedList(false, false, values);
-    }
-    
-    @Override
-    public Set<TKey> keySet() {
-        return _keys != null ? _keys : (_keys = getKeys());
-    }
-    
-    @Override
-    public TValue remove(final Object key) {
-        if (!containsKey(key)) { return null; }
-        final TValue value = get(key);
-        Remove((TKey) key);
-        return value;
-    }
-    
-    @Override
-    public boolean Remove(final TKey key) {
-        synchronized (_items.Locker()) {
-            final int index = _items.IndexOf(new SimpleEntry<>(createHashItem(key), null));
-            if (index < 0) { return false; }
-            _keys = null;
-            _values = null;
-            _items.RemoveAt(index);
-            return true;
-        }
-    }
-    
+    //endregion
+
+    //region Get
+
     public boolean TryGetValue(final TKey key, final RefParam<TValue> value) {
         synchronized (_items.Locker()) {
             final int index = _items.IndexOf(new SimpleEntry<>(createHashItem(key), null));
@@ -188,12 +154,7 @@ public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TVal
             return true;
         }
     }
-    
-    @Override
-    public Collection<TValue> values() {
-        return _values != null ? _values : (_values = getValues());
-    }
-    
+
     @Override
     public TValue get(final Object key) {
         return Get((TKey) key);
@@ -205,7 +166,112 @@ public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TVal
         if (TryGetValue(key, value)) { return value.value; }
         return null;
     }
-    
+
+    //endregion
+
+    //region Copy
+
+    public void CopyTo(final Map.Entry<TKey, TValue>[] array, int arrayIndex) {
+        synchronized (_items.Locker()) {
+            for (final Map.Entry<HashItem<TKey>, TValue> item : _items) {
+                array[arrayIndex++] = new SimpleEntry<>(item.getKey().Value(), item.getValue());
+            }
+        }
+    }
+
+    //endregion
+
+    //region Search
+
+    @Override
+    public boolean containsKey(final Object key) {
+        return ContainsKey((TKey) key);
+    }
+
+    @Override
+    public boolean ContainsKey(final TKey key) {
+        return _items.Contains(new SimpleEntry<>(createHashItem(key), null));
+    }
+
+    /** == ContainsKey(item.Key) */
+    public boolean Contains(final Map.Entry<TKey, TValue> item) {
+        return ContainsKey(item.getKey());
+    }
+
+    @Override
+    public boolean containsValue(final Object value) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    //endregion
+
+    //region Size
+
+    @Override
+    public int size() {
+        return _items.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return _items.isEmpty();
+    }
+
+    //endregion
+
+    //region Remove
+
+    /** == Remove(item.Key); */
+    public boolean Remove(final Map.Entry<TKey, TValue> item) {
+        return Remove(item.getKey());
+    }
+
+    @Override
+    public TValue remove(final Object key) {
+        if (!containsKey(key)) { return null; }
+        final TValue value = get(key);
+        Remove((TKey) key);
+        return value;
+    }
+
+    @Override
+    public boolean Remove(final TKey key) {
+        synchronized (_items.Locker()) {
+            final int index = _items.IndexOf(new SimpleEntry<>(createHashItem(key), null));
+            if (index < 0) { return false; }
+            _keys = null;
+            _values = null;
+            _items.RemoveAt(index);
+            return true;
+        }
+    }
+
+    @Override
+    public void clear() {
+        synchronized (_items.Locker()) {
+            _items.clear();
+            _keys = null;
+            _values = null;
+        }
+    }
+
+    //endregion
+
+    //region Put
+
+    private TValue putPrivate(final TKey key, final TValue value) {
+        _items.add(new SimpleEntry<>(createHashItem(key), value));
+        _keys = null;
+        _values = null;
+        return value;
+    }
+
+    protected void setItem(final int index, final Map.Entry<HashItem<TKey>, TValue> item) {
+        _items.set(index, item);
+        _keys = null;
+        _values = null;
+    }
+
     @Override
     public TValue put(final TKey key, final TValue value) {
         synchronized (_items.Locker()) {
@@ -218,56 +284,32 @@ public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TVal
             return value;
         }
     }
-    
-    protected void setItem(final int index, final Map.Entry<HashItem<TKey>, TValue> item) {
-        _items.set(index, item);
-        _keys = null;
-        _values = null;
-    }
-    
+
     public void put(final Map.Entry<TKey, TValue> item) {
         put(item.getKey(), item.getValue());
     }
-    
+
     @Override
-    public void clear() {
-        synchronized (_items.Locker()) {
-            _items.clear();
-            _keys = null;
-            _values = null;
+    public void putAll(final Map<? extends TKey, ? extends TValue> map) {
+        for (final TKey key : map.keySet()) {
+            put(key, map.get(key));
         }
     }
-    
-    /** == ContainsKey(item.Key) */
-    public boolean Contains(final Map.Entry<TKey, TValue> item) {
-        return ContainsKey(item.getKey());
-    }
-    
-    public void CopyTo(final Map.Entry<TKey, TValue>[] array, int arrayIndex) {
-        synchronized (_items.Locker()) {
-            for (final Map.Entry<HashItem<TKey>, TValue> item : _items) {
-                array[arrayIndex++] = new SimpleEntry<>(item.getKey().Value(), item.getValue());
-            }
-        }
-    }
-    
+
+    //endregion
+
+    //region Iterators
+
     @Override
-    public int size() {
-        return _items.size();
+    public Set<TKey> keySet() {
+        return _keys != null ? _keys : (_keys = getKeys());
     }
-    
-    public boolean IsReadOnly() {
-        return false;
+
+    @Override
+    public Collection<TValue> values() {
+        return _values != null ? _values : (_values = getValues());
     }
-    
-    /** == Remove(item.Key); */
-    public boolean Remove(final Map.Entry<TKey, TValue> item) {
-        return Remove(item.getKey());
-    }
-    
-    private final Func1<Map.Entry<HashItem<TKey>, TValue>, Map.Entry<TKey, TValue>> _convertEntryFunc
-        = entry -> new SimpleEntry<>(entry.getKey().Value(), entry.getValue());
-    
+
     @Override
     public Set<Map.Entry<TKey, TValue>> entrySet() {
         final IList<Entry<TKey, TValue>> items = new SortedList<>(false, false);
@@ -277,73 +319,38 @@ public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TVal
         }
         return items;
     }
-    
+
+    private Set<TKey> getKeys() {
+        final Object[] keys = new Object[_items.size()];
+        int i = 0;
+        for (final Map.Entry<HashItem<TKey>, TValue> item : _items) {
+            keys[i++] = item.getKey().Value();
+        }
+        return new SortedList(false, false, keys);
+    }
+
+    private Set<TValue> getValues() {
+        final Object[] values = new Object[_items.size()];
+        int i = 0;
+        for (final Map.Entry<HashItem<TKey>, TValue> item : _items) {
+            values[i++] = item.getValue();
+        }
+        return new SortedList(false, false, values);
+    }
+
+    private final Func1<Map.Entry<HashItem<TKey>, TValue>, Map.Entry<TKey, TValue>> _convertEntryFunc
+        = entry -> new SimpleEntry<>(entry.getKey().Value(), entry.getValue());
+
     @Override
     public Iterator<Map.Entry<TKey, TValue>> iterator() {
         return new ConvertIterator<>(_items.iterator(), _convertEntryFunc);
     }
-    
-    @Override
-    public boolean isEmpty() {
-        return _items.isEmpty();
-    }
-    
-    @Override
-    public void putAll(final Map<? extends TKey, ? extends TValue> map) {
-        for (final TKey key : map.keySet()) {
-            put(key, map.get(key));
-        }
-    }
-    
-    @Override
-    public boolean containsValue(final Object value) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
 
-    public void OnItemModified(final TKey key) {
-        synchronized (_items.Locker()) {
-            if (_items.CollectionChangedHasObservers()) {
-                SimpleEntry<HashItem<TKey>, TValue> entry = new SimpleEntry<>(createHashItem(key), null);
-                final int index = _items.IndexOf(entry);
-                if (index < 0) {
-                    Log.e(LOG_TAG, "OnItemModified: Item not found by key=" + key);
-                } else {
-                    entry.setValue(_items.get(index).getValue());
-                    _items.OnItemModified(index, entry);
-                }
-            }
-        }
-    }
-    
-    @Override
-    public void OnItemModified(final TKey key, final TValue oldValue) {
-        synchronized (_items.Locker()) {
-            if (_items.CollectionChangedHasObservers()) {
-                SimpleEntry<HashItem<TKey>, TValue> entry = new SimpleEntry<>(createHashItem(key), oldValue);
-                final int index = _items.IndexOf(entry);
-                if (index < 0) {
-                    Log.e(LOG_TAG, "OnItemModified: Item not found by key=" + key);
-                } else {
-                    _items.OnItemModified(index, entry);
-                }
-            }
-        }
-    }
+    //endregion
 
-    @Override
-    public void OnItemModified(final int index, final Map.Entry<TKey, TValue> oldItem) {
-        synchronized (_items.Locker()) {
-            final HashItem<TKey> key = _items.get(index).getKey();
-            _items.OnItemModified(index, new SimpleEntry<>(key, oldItem.getValue()));
-        }
-    }
+    //region CollectionChanged events
 
-    @Override
-    public void OnItemModified(final int index) {
-        _items.OnItemModified(index);
-    }
-
-    //region Changed events
+    //region DictionaryChanged
 
     private Observable<DictionaryChangedEventArgs<TKey, TValue>> _dictionaryChangedObservable;
 
@@ -433,6 +440,10 @@ public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TVal
         return _dictionaryChangedObservable;
     }
 
+    //endregion
+
+    //region CollectionChanged
+
     private Observable<CollectionChangedEventArgs> _collectionChangedObservable;
 
     @Override
@@ -455,17 +466,54 @@ public class SortDict<TKey, TValue> implements IDictionaryChangedDict<TKey, TVal
         return _collectionChangedObservable;
     }
 
-    private static Object[] castHashItems(Object[] items) {
-        if (items == null) {
-            return null;
+    //endregion
+
+    //region OnItemModified
+
+    public void OnItemModified(final TKey key) {
+        synchronized (_items.Locker()) {
+            if (_items.CollectionChangedHasObservers()) {
+                SimpleEntry<HashItem<TKey>, TValue> entry = new SimpleEntry<>(createHashItem(key), null);
+                final int index = _items.IndexOf(entry);
+                if (index < 0) {
+                    Log.e(LOG_TAG, "OnItemModified: Item not found by key=" + key);
+                } else {
+                    entry.setValue(_items.get(index).getValue());
+                    _items.OnItemModified(index, entry);
+                }
+            }
         }
-        int count = items.length;
-        Object[] result = new Object[count];
-        for (int i = 0; i < count; i++) {
-            result[i] = ((HashItem)items[i]).Value();
-        }
-        return result;
     }
+
+    @Override
+    public void OnItemModified(final TKey key, final TValue oldValue) {
+        synchronized (_items.Locker()) {
+            if (_items.CollectionChangedHasObservers()) {
+                SimpleEntry<HashItem<TKey>, TValue> entry = new SimpleEntry<>(createHashItem(key), oldValue);
+                final int index = _items.IndexOf(entry);
+                if (index < 0) {
+                    Log.e(LOG_TAG, "OnItemModified: Item not found by key=" + key);
+                } else {
+                    _items.OnItemModified(index, entry);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void OnItemModified(final int index, final Map.Entry<TKey, TValue> oldItem) {
+        synchronized (_items.Locker()) {
+            final HashItem<TKey> key = _items.get(index).getKey();
+            _items.OnItemModified(index, new SimpleEntry<>(key, oldItem.getValue()));
+        }
+    }
+
+    @Override
+    public void OnItemModified(final int index) {
+        _items.OnItemModified(index);
+    }
+
+    //endregion
 
     //endregion
 

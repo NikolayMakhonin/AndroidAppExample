@@ -13,7 +13,6 @@ public class ClassUtils {
             return false;
         }
         final Class[] interfaces = subClass.getInterfaces();
-        final int length = interfaces.length;
         for (Class anInterface : interfaces) {
             if (IsSubClassOrInterface(anInterface, baseClass)) {
                 return true;
@@ -25,7 +24,6 @@ public class ClassUtils {
     public static Field getPrivateField(Class type, final String fieldName) {        
         while (type != null) {
             final Field[] fields = type.getDeclaredFields();
-            final int length = fields.length;
             for (final Field field : fields) {
                 if (field.getName().equals(fieldName)) {
                     return field;

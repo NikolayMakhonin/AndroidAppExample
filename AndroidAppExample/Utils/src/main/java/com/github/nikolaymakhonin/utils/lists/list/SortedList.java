@@ -20,6 +20,15 @@ import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
 public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollection {
+
+    private String LOG_TAG = "SortedList";
+    private final static float RESIZE_COEF = 2.0f;
+    private final static float RESIZE_COEF_2 = RESIZE_COEF * RESIZE_COEF;
+    private int _count;
+    private Object[] _list;
+
+    //region Locker
+
     private Object _locker = new Object();
     
     @Override
@@ -31,41 +40,30 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
         _locker = locker;
     }
 
-    boolean _NotAddIfExists;
+    //endregion
+
+    //region Settings
+
+    private boolean _notAddIfExists;
     
     public boolean getNotAddIfExists() {
-        return _NotAddIfExists;
+        return _notAddIfExists;
     }
     
     public void setNotAddIfExists(final boolean value) {
-        _NotAddIfExists = value;
+        _notAddIfExists = value;
     }
-    
-    private final static float RESIZE_COEF = 2.0f;
-    private final static float RESIZE_COEF_2 = RESIZE_COEF * RESIZE_COEF;
-    private int _count;
-    private Object[] _list;
-    private ListItemComparator _Comparator = new ListItemComparator<T>();
-    private int _countSorted;
-    
-    public int CountSorted() {
-        synchronized (_locker) {
-            return _countSorted;
-        }
+
+    public boolean IsReadOnly() {
+        return false;
     }
-    
-    boolean _AutoSort;
-    
-    @Override
-    public boolean getAutoSort() {
-        return _AutoSort;
-    }
-    
-    @Override
-    public void setAutoSort(final boolean value) {
-		_AutoSort = value;
-    }
-    
+
+    //endregion
+
+    //region Comparator
+
+    private ListItemComparator _comparator = new ListItemComparator<T>();
+
     private class ListItemComparator<T> implements Comparator<T> {
         public Comparator<T> comparator;
         
@@ -110,24 +108,28 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
     };
     
     public Comparator<? super Object> getComparator() {
-        return _Comparator == null ? null : _Comparator.comparator;
+        return _comparator == null ? null : _comparator.comparator;
     }
     
     public void setComparator(final Comparator<? super T> value) {
         synchronized (_locker) {
-            if (_Comparator == null) {
+            if (_comparator == null) {
                 if (value == null) { return; }
-                _Comparator = new ListItemComparator<T>();
-                _Comparator.comparator = value;
+                _comparator = new ListItemComparator<T>();
+                _comparator.comparator = value;
                 _countSorted = 0;
                 return;
             }
-            if (_Comparator.comparator == value) { return; }
-            _Comparator.comparator = value;
+            if (_comparator.comparator == value) { return; }
+            _comparator.comparator = value;
             _countSorted = 0;
         }
     }
-    
+
+    //endregion
+
+    //region Constructors
+
     public SortedList(final Iterable<? extends T> list) {
         this();
         AddAll(list);
@@ -170,11 +172,11 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
     
     public SortedList(final boolean autoSort, final boolean notAddIfExists, final Comparator<? super T> Comparator,
         final Object[] list) {
-        _AutoSort = autoSort;
-        _NotAddIfExists = notAddIfExists;
+        _autoSort = autoSort;
+        _notAddIfExists = notAddIfExists;
         setComparator(Comparator);
         if (list != null) {
-            if (_NotAddIfExists) {
+            if (_notAddIfExists) {
                 _list = new Object[4];
                 _count = 0;
                 AddAllPrivate(list);
@@ -187,32 +189,11 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             _count = 0;
         }
     }
-    
-    private final Subject<CollectionChangedEventArgs, CollectionChangedEventArgs> _CollectionChanged = PublishSubject.create();
-    
-    @Override
-    public Observable<CollectionChangedEventArgs> CollectionChanged() {
-        return _CollectionChanged;
-    }
 
-    public boolean CollectionChangedHasObservers() {
-        return _CollectionChanged.hasObservers();
-    }
-    
-    private final LinkedList<CollectionChangedEventArgs> _queueCollectionChanged = new LinkedList<CollectionChangedEventArgs>();
-    private boolean _queueCollectionChangedHandling;
-    
-    private void OnCollectionChanged(final CollectionChangedEventArgs eventArgs) {
-        _queueCollectionChanged.offer(eventArgs);
-        if (_queueCollectionChangedHandling) { return; }
-        _queueCollectionChangedHandling = true;
-        while (_queueCollectionChanged.size() > 0) {
-            final CollectionChangedEventArgs queueEventArgs = _queueCollectionChanged.poll();
-            _CollectionChanged.onNext(queueEventArgs);
-        }
-        _queueCollectionChangedHandling = false;
-    }
-    
+    //endregion
+
+    //region Size
+
     @Override
     public int size() {
         return _count;
@@ -240,7 +221,7 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
                 _countSorted = value;
             }
             if (value < oldCount) {
-                if (enableCollectionChanged && _CollectionChanged.hasObservers()) {
+                if (enableCollectionChanged && _collectionChanged.hasObservers()) {
                     final Object[] removedList = new Object[oldCount - value];
                     System.arraycopy(_list, value, removedList, 0, removedList.length);
                     OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Removed, value, -1,
@@ -260,7 +241,7 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
                 if (fillDefaultValue) {
                     Arrays.fill(_list, oldCount, value, defaultValue);
                 }
-                if (enableCollectionChanged && _CollectionChanged.hasObservers()) {
+                if (enableCollectionChanged && _collectionChanged.hasObservers()) {
                     final Object[] addedList = new Object[value - oldCount];
                     System.arraycopy(_list, oldCount, addedList, 0, addedList.length);
                     OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Added, -1, oldCount,
@@ -269,10 +250,19 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             }
         }
     }
-    
+
+    @Override
+    public boolean isEmpty() {
+        return _count == 0;
+    }
+
+    //endregion
+
+    //region Search
+
     private int binarySearch(final int startIndex, final int length, final T item) {
-        return _Comparator == null ? Arrays.binarySearch(_list, startIndex, startIndex + length, item) : Arrays
-            .binarySearch(_list, startIndex, startIndex + length, item, _Comparator);
+        return _comparator == null ? Arrays.binarySearch(_list, startIndex, startIndex + length, item) : Arrays
+            .binarySearch(_list, startIndex, startIndex + length, item, _comparator);
     }
     
     @Override
@@ -283,7 +273,7 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
     @Override
     public int IndexOf(final T item) {
         synchronized (_locker) {
-            if (_AutoSort) {
+            if (_autoSort) {
                 Sort();
             }
             final int index = binarySearch(0, _countSorted, item);
@@ -291,8 +281,8 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
                 for (int i = _countSorted; i < _count; i++) {
                     final T item2 = (T) _list[i];
                     int Comparatoresult;
-                    if (_Comparator != null) {
-                        Comparatoresult = _Comparator.compare(item, item2);
+                    if (_comparator != null) {
+                        Comparatoresult = _comparator.compare(item, item2);
                     } else if (item instanceof Comparable) {
                         Comparatoresult = ((Comparable) item).compareTo(item2);
                     } else if (item2 instanceof Comparable) {
@@ -306,7 +296,55 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             return index;
         }
     }
-    
+
+    @Override
+    public boolean contains(final Object item) {
+        return Contains((T) item);
+    }
+
+    @Override
+    public boolean Contains(final T item) {
+        return IndexOf(item) >= 0;
+    }
+
+    @Override
+    public boolean containsAll(final Collection<?> collection) {
+        synchronized (_locker) {
+            for (final Object item : collection) {
+                if (!Contains((T) item)) { return false; }
+            }
+            return true;
+        }
+    }
+
+    @Override
+    public int lastIndexOf(final Object object) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    //endregion
+
+    //region Add, Insert
+
+    @Override
+    public boolean add(final T item) {
+        synchronized (_locker) {
+            if (_notAddIfExists || _autoSort) {
+                int i = IndexOf(item);
+                if (i < 0) {
+                    i = ~i;
+                } else if (_notAddIfExists) { return false; }
+                if (_autoSort) {
+                    _countSorted++;
+                }
+                insert((_autoSort) ? i : _count, item);
+                return true;
+            }
+            insert(_count, item);
+            return true;
+        }
+    }
+
     @Override
     public void add(final int index, final T object) {
         Insert(index, object);
@@ -315,11 +353,11 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
     @Override
     public void Insert(final int index, final T item) {
         synchronized (_locker) {
-            if (_AutoSort) {
+            if (_autoSort) {
                 add(item);
                 return;
             }
-            if (_NotAddIfExists && Contains(item)) {
+            if (_notAddIfExists && Contains(item)) {
                 return;
             }			
             if (index < _countSorted) {
@@ -335,7 +373,7 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             _list[i] = _list[i - 1];
         }
         _list[index] = item;
-        if (_CollectionChanged.hasObservers()) {
+        if (_collectionChanged.hasObservers()) {
             if (index < _count - 1) {
                 OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Shift, index, index + 1,
                     null, null));
@@ -344,174 +382,21 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
                 new Object[] { item }));
         }
     }
-    
-    @Override
-    public T remove(final int index) {
-        synchronized (_locker) {
-            final T value = get(index);
-            RemoveAt(index);
-            return value;
-        }
-    }
-    
-    @Override
-    public void RemoveAt(final int index) {
-        synchronized (_locker) {
-            final T oldItem = (T) _list[index];
-            for (int i = index; i < _count - 1; i++) {
-                _list[i] = _list[i + 1];
-            }
-			if (index < _countSorted) {
-                _countSorted--;
-            }
-            setSize(_count - 1, false);
-            if (_CollectionChanged.hasObservers()) {
-                OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Removed, index, -1,
-                    new Object[] { oldItem }, null));
-                if (index < _count) {
-                    OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Shift, index + 1,
-                        index, null, null));
-                }
-            }
-        }
-    }
-    
-    @Override
-    public T get(final int index) {
-        if (index >= _count) { throw new IllegalArgumentException(String.format("SortedList: index(%s) >= count(%s)",
-            index, _count)); }
-        if (_AutoSort) {
-            Sort();
-        }
-        return (T) _list[index];
-    }
-    
-    @Override
-    public T set(final int index, final T value) {
-        synchronized (_locker) {
-            if (index >= _count) { throw new IllegalArgumentException(String.format(
-                "SortedList: index(%s) >= count(%s)", index, _count)); }
-            if (_AutoSort) {
-                Sort();
-            }
-            final T oldItem = (T) _list[index];
-            if (_AutoSort || _NotAddIfExists) {
-                int i = IndexOf(value);
-                if (i < 0) {
-                    i = ~i;
-                    if (i > index) {
-                        i--;
-                    }
-                } else if (_NotAddIfExists && i != index) {
-                    final T existsValue = (T) _list[i];
-                    RemoveAt(index);
-                    return existsValue;
-                }
-                _list[index] = value;
-                if (_CollectionChanged.hasObservers()) {
-                    OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Setted, index, index,
-                        new Object[] { oldItem }, new Object[] { value }));
-                }
-                if (_AutoSort) {
-                    move(index, i);
-                    if (index < _countSorted && i >= _countSorted) {
-                        _countSorted--;
-                    }
-                    if (index != i && _CollectionChanged.hasObservers()) {
-                        OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Moved, index, i,
-                            null, new Object[] { value }));
-                    }
-                } else {
-                    if (index < _countSorted) {
-                        _countSorted = index;
-                    }
-                }
-            } else {
-                _list[index] = value;
-                if (index < _countSorted) {
-                    _countSorted = index;
-                }
-                if (_CollectionChanged.hasObservers()) {
-                    OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Setted, index, index,
-                        new Object[] { oldItem }, new Object[] { value }));
-                }
-            }
-            
-        }
-        return value;
-    }
-    
-    public boolean Move(final int oldIndex, final int newIndex) {
-        synchronized (_locker) {
-            if (_AutoSort) {
-                Log.e("SortedList", "Попытка переместить объект в сортированной коллекции");
-                return false;
-            }
-            if (move(oldIndex, newIndex)) {
-                if (oldIndex != newIndex && _CollectionChanged.hasObservers()) {
-                    OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Moved, oldIndex,
-                        newIndex, null, new Object[] { _list[newIndex] }));
-                }
-                return true;
-            }
-            return false;
-        }
-    }
-    
-    private boolean move(final int oldIndex, int newIndex) {
-        if (oldIndex == newIndex) { return true; }
-        if (oldIndex < 0) {
-            Log.e("SortedList", "oldIndex < 0");
-            return false;
-        }
-        if (oldIndex >= _count) {
-            Log.e("SortedList", "oldIndex >= count");
-            return false;
-        }
-        if (newIndex < 0) {
-            newIndex = 0;
-        }
-        if (newIndex >= _count) {
-            newIndex = _count - 1;
-        }
-        final T moveObject = (T) _list[oldIndex];
-        final int step = (newIndex > oldIndex) ? 1 : -1;
-        for (int i = oldIndex; i != newIndex; i += step) {
-            _list[i] = _list[i + step];
-        }
-        _list[newIndex] = moveObject;
-        return true;
-    }
-    
-    @Override
-    public boolean add(final T item) {
-        synchronized (_locker) {
-            if (_NotAddIfExists || _AutoSort) {
-                int i = IndexOf(item);
-                if (i < 0) {
-                    i = ~i;
-                } else if (_NotAddIfExists) { return false; }
-                if (_AutoSort) {
-                    _countSorted++;
-                }
-                insert((_AutoSort) ? i : _count, item);
-                return true;
-            }
-            insert(_count, item);
-            return true;
-        }
-    }
-    
+
+    //endregion
+
+    //region Add collection
+
     @Override
     public boolean addAll(final Collection<? extends T> collection) {
         AddAll(collection);
         return true;
     }
-    
+
     @Override
     public boolean addAll(final int index, final Collection<? extends T> collection) {
         synchronized (_locker) {
-            if (!_AutoSort) {
+            if (!_autoSort) {
                 final int oldCount = _count;
                 final int collectionCount = collection.size();
                 if (collectionCount <= 0) { return true; }
@@ -520,18 +405,18 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
                     _countSorted = index;
                 }
                 System.arraycopy(_list, index, _list, index + collectionCount, oldCount - index);
-                
-                if (_CollectionChanged.hasObservers()) {
+
+                if (_collectionChanged.hasObservers()) {
                     OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Shift, index, index
                         + collectionCount, null, null));
                 }
-                
+
                 int i = index;
                 for (final T item : collection) {
                     _list[i++] = item;
                 }
-                
-                if (_CollectionChanged.hasObservers()) {
+
+                if (_collectionChanged.hasObservers()) {
                     final Object[] addedList = new Object[collectionCount];
                     System.arraycopy(_list, index, addedList, 0, collectionCount);
                     OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Added, -1, index, null,
@@ -545,19 +430,21 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
     }
 
     @Override
-    public boolean addAll(final int index, final T[] collection) {
+    public void AddAll(final int index, final T[] collection) {
         synchronized (_locker) {
-            if (!_AutoSort) {
+            if (!_autoSort) {
                 final int oldCount = _count;
                 final int collectionCount = collection.length;
-                if (collectionCount <= 0) { return true; }
+                if (collectionCount <= 0) {
+                    return;
+                }
                 setSize(_count + collectionCount, false);
                 if (index < _countSorted) {
                     _countSorted = index;
                 }
                 System.arraycopy(_list, index, _list, index + collectionCount, oldCount - index);
 
-                if (_CollectionChanged.hasObservers()) {
+                if (_collectionChanged.hasObservers()) {
                     OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Shift, index, index
                         + collectionCount, null, null));
                 }
@@ -567,7 +454,7 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
                     _list[i++] = item;
                 }
 
-                if (_CollectionChanged.hasObservers()) {
+                if (_collectionChanged.hasObservers()) {
                     final Object[] addedList = new Object[collectionCount];
                     System.arraycopy(_list, index, addedList, 0, collectionCount);
                     OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Added, -1, index, null,
@@ -577,20 +464,20 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
                 AddAll(collection);
             }
         }
-        return true;
+        return;
     }
 
     @Override
     public void AddAll(final Iterable<? extends T> collection) {
         synchronized (_locker) {
-            if (!_AutoSort) {
+            if (!_autoSort) {
                 final int oldCount = _count;
                 for (final T item : collection) {
                     setSize(_count + 1, false);
                     _list[_count - 1] = item;
                 }
                 if (_count > oldCount) {
-                    if (_CollectionChanged.hasObservers()) {
+                    if (_collectionChanged.hasObservers()) {
                         final Object[] addedList = new Object[_count - oldCount];
                         System.arraycopy(_list, oldCount, addedList, 0, addedList.length);
                         OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Added, -1,
@@ -604,22 +491,22 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             }
         }
     }
-    
+
     @Override
     public <T2 extends T> void AddAll(final T2[] collection) {
         AddAllPrivate(collection);
     }
-    
+
     private <T2> void AddAllPrivate(final T2[] collection) {
         synchronized (_locker) {
-            if (!_AutoSort) {
+            if (!_autoSort) {
                 final int oldCount = _count;
                 for (final Object item : collection) {
                     setSize(_count + 1, false);
                     _list[_count - 1] = item;
                 }
                 if (_count > oldCount) {
-                    if (_CollectionChanged.hasObservers()) {
+                    if (_collectionChanged.hasObservers()) {
                         final Object[] addedList = new Object[_count - oldCount];
                         System.arraycopy(_list, oldCount, addedList, 0, addedList.length);
                         OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Added, -1,
@@ -633,98 +520,48 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             }
         }
     }
-    
+
+    //endregion
+
+    //region Remove
+
     @Override
-    public void ReSort() {
+    public T remove(final int index) {
         synchronized (_locker) {
-            _countSorted = 0;
-            Sort();
+            final T value = get(index);
+            RemoveAt(index);
+            return value;
         }
     }
-    
+
     @Override
-    public void Sort() {
-        if (_countSorted == _count) { return; }
+    public T RemoveAt(final int index) {
         synchronized (_locker) {
-            if (_Comparator == null) {
-                Arrays.sort(_list, 0, _count);
-            } else {
-                Arrays.sort(_list, 0, _count, _Comparator);
+            final T oldItem = (T) _list[index];
+            for (int i = index; i < _count - 1; i++) {
+                _list[i] = _list[i + 1];
             }
-            _countSorted = _count;
-            if (_CollectionChanged.hasObservers()) {
-                OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Resorted, -1, -1, null,
-                    null));
+            if (index < _countSorted) {
+                _countSorted--;
             }
-        }
-    }
-    
-    @Override
-    public void clear() {
-        synchronized (_locker) {
-            setSize(0);
-        }
-    }
-    
-    @Override
-    public boolean contains(final Object item) {
-        return Contains((T) item);
-    }
-    
-    @Override
-    public boolean Contains(final T item) {
-        return IndexOf(item) >= 0;
-    }
-    
-    @Override
-    public boolean containsAll(final Collection<?> collection) {
-        synchronized (_locker) {
-            for (final Object item : collection) {
-                if (!Contains((T) item)) { return false; }
+            setSize(_count - 1, false);
+            if (_collectionChanged.hasObservers()) {
+                OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Removed, index, -1,
+                    new Object[] { oldItem }, null));
+                if (index < _count) {
+                    OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Shift, index + 1,
+                        index, null, null));
+                }
             }
-            return true;
+            return oldItem;
         }
     }
-    
-    @Override
-    public void CopyTo(final T[] array, final int arrayIndex) {
-        synchronized (_locker) {
-            if (_AutoSort) {
-                this.Sort();
-            }
-            System.arraycopy(_list, 0, array, arrayIndex, _count);
-        }
-    }
-    
-    @Override
-    public Object[] toArray() {
-        synchronized (_locker) {
-            if (_AutoSort) {
-                this.Sort();
-            }
-            return Arrays.copyOf(_list, _count);
-        }
-    }
-    
-    @Override
-    public <T> T[] toArray(final Class<? extends T[]> classOfArrayT) {
-        synchronized (_locker) {
-            if (_AutoSort) {
-                this.Sort();
-            }
-            return Arrays.copyOf(_list, _count, classOfArrayT);
-        }
-    }
-    
-    public boolean IsReadOnly() {
-        return false;
-    }
-    
+
     @Override
     public boolean remove(final Object item) {
         return Remove((T) item);
     }
-    
+
     @Override
     public boolean Remove(final T item) {
         synchronized (_locker) {
@@ -735,7 +572,7 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             return i >= 0;
         }
     }
-    
+
     @Override
     public boolean removeAll(final Collection<?> collection) {
         for (final Object item : collection) {
@@ -743,7 +580,7 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
         }
         return true;
     }
-    
+
     @Override
     public boolean retainAll(final Collection<?> collection) {
         final IList sortedCollection = new SortedList(true, true, collection);
@@ -760,7 +597,212 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             return true;
         }
     }
+
+    @Override
+    public void clear() {
+        synchronized (_locker) {
+            setSize(0);
+        }
+    }
+
+    //endregion
+
+    //region Get, Set
+
+    @Override
+    public T get(final int index) {
+        if (index >= _count) { throw new IllegalArgumentException(String.format("SortedList: index(%s) >= count(%s)",
+            index, _count)); }
+        if (_autoSort) {
+            Sort();
+        }
+        return (T) _list[index];
+    }
     
+    @Override
+    public T set(final int index, final T value) {
+        synchronized (_locker) {
+            if (index >= _count) { throw new IllegalArgumentException(String.format(
+                "SortedList: index(%s) >= count(%s)", index, _count)); }
+            if (_autoSort) {
+                Sort();
+            }
+            final T oldItem = (T) _list[index];
+            if (_autoSort || _notAddIfExists) {
+                int i = IndexOf(value);
+                if (i < 0) {
+                    i = ~i;
+                    if (i > index) {
+                        i--;
+                    }
+                } else if (_notAddIfExists && i != index) {
+                    final T existsValue = (T) _list[i];
+                    RemoveAt(index);
+                    return existsValue;
+                }
+                _list[index] = value;
+                if (_collectionChanged.hasObservers()) {
+                    OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Setted, index, index,
+                        new Object[] { oldItem }, new Object[] { value }));
+                }
+                if (_autoSort) {
+                    move(index, i);
+                    if (index < _countSorted && i >= _countSorted) {
+                        _countSorted--;
+                    }
+                    if (index != i && _collectionChanged.hasObservers()) {
+                        OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Moved, index, i,
+                            null, new Object[] { value }));
+                    }
+                } else {
+                    if (index < _countSorted) {
+                        _countSorted = index;
+                    }
+                }
+            } else {
+                _list[index] = value;
+                if (index < _countSorted) {
+                    _countSorted = index;
+                }
+                if (_collectionChanged.hasObservers()) {
+                    OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Setted, index, index,
+                        new Object[] { oldItem }, new Object[] { value }));
+                }
+            }
+            
+        }
+        return value;
+    }
+
+    //endregion
+
+    //region Move
+
+    public boolean Move(final int oldIndex, final int newIndex) {
+        synchronized (_locker) {
+            if (_autoSort) {
+                Log.e(LOG_TAG, "Попытка переместить объект в сортированной коллекции");
+                return false;
+            }
+            if (move(oldIndex, newIndex)) {
+                if (oldIndex != newIndex && _collectionChanged.hasObservers()) {
+                    OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Moved, oldIndex,
+                        newIndex, null, new Object[] { _list[newIndex] }));
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    private boolean move(final int oldIndex, int newIndex) {
+        if (oldIndex == newIndex) { return true; }
+        if (oldIndex < 0) {
+            Log.e(LOG_TAG, "oldIndex < 0");
+            return false;
+        }
+        if (oldIndex >= _count) {
+            Log.e(LOG_TAG, "oldIndex >= count");
+            return false;
+        }
+        if (newIndex < 0) {
+            newIndex = 0;
+        }
+        if (newIndex >= _count) {
+            newIndex = _count - 1;
+        }
+        final T moveObject = (T) _list[oldIndex];
+        final int step = (newIndex > oldIndex) ? 1 : -1;
+        for (int i = oldIndex; i != newIndex; i += step) {
+            _list[i] = _list[i + step];
+        }
+        _list[newIndex] = moveObject;
+        return true;
+    }
+
+    //endregion
+
+    //region Sort
+
+    private boolean _autoSort;
+
+    @Override
+    public boolean getAutoSort() {
+        return _autoSort;
+    }
+
+    @Override
+    public void setAutoSort(final boolean value) {
+        _autoSort = value;
+    }
+
+    @Override
+    public void ReSort() {
+        synchronized (_locker) {
+            _countSorted = 0;
+            Sort();
+        }
+    }
+    
+    @Override
+    public void Sort() {
+        if (_countSorted == _count) { return; }
+        synchronized (_locker) {
+            if (_comparator == null) {
+                Arrays.sort(_list, 0, _count);
+            } else {
+                Arrays.sort(_list, 0, _count, _comparator);
+            }
+            _countSorted = _count;
+            if (_collectionChanged.hasObservers()) {
+                OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Resorted, -1, -1, null,
+                    null));
+            }
+        }
+    }
+
+    private int _countSorted;
+
+    public int CountSorted() {
+        synchronized (_locker) {
+            return _countSorted;
+        }
+    }
+
+    //endregion
+
+    //region Copy
+
+    @Override
+    public void CopyTo(final T[] array, final int arrayIndex) {
+        synchronized (_locker) {
+            if (_autoSort) {
+                this.Sort();
+            }
+            System.arraycopy(_list, 0, array, arrayIndex, _count);
+        }
+    }
+    
+    @Override
+    public Object[] toArray() {
+        synchronized (_locker) {
+            if (_autoSort) {
+                this.Sort();
+            }
+            return Arrays.copyOf(_list, _count);
+        }
+    }
+    
+    @Override
+    public <T> T[] toArray(final Class<? extends T[]> classOfArrayT) {
+        synchronized (_locker) {
+            if (_autoSort) {
+                this.Sort();
+            }
+            return Arrays.copyOf(_list, _count, classOfArrayT);
+        }
+    }
+
     @Override
     public <T> T[] toArray(final T[] a) {
         if (a.length < _count) {
@@ -778,27 +820,21 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
     public List<T> subList(final int start, final int end) {
         return new SortedList<T>(false, false, Arrays.copyOfRange(_list, start, end));
     }
-    
+
+    //endregion
+
+    //region Iterator
+
     @Override
     public Iterator<T> iterator() {
         synchronized (_locker) {
-            if (_AutoSort) {
+            if (_autoSort) {
                 Sort();
             }
             return new SortedListIterator<T>(_list, _count);
         }
     }
-    
-    @Override
-    public boolean isEmpty() {
-        return _count == 0;
-    }
-    
-    @Override
-    public int lastIndexOf(final Object object) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-    
+
     @Override
     public ListIterator<T> listIterator() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
@@ -808,7 +844,36 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
     public ListIterator<T> listIterator(final int location) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
-    
+
+    //endregion
+
+    //region CollectionChanged event
+
+    private final Subject<CollectionChangedEventArgs, CollectionChangedEventArgs> _collectionChanged = PublishSubject.create();
+
+    @Override
+    public Observable<CollectionChangedEventArgs> CollectionChanged() {
+        return _collectionChanged;
+    }
+
+    public boolean CollectionChangedHasObservers() {
+        return _collectionChanged.hasObservers();
+    }
+
+    private final LinkedList<CollectionChangedEventArgs> _queueCollectionChanged = new LinkedList<CollectionChangedEventArgs>();
+    private boolean _queueCollectionChangedHandling;
+
+    private void OnCollectionChanged(final CollectionChangedEventArgs eventArgs) {
+        _queueCollectionChanged.offer(eventArgs);
+        if (_queueCollectionChangedHandling) { return; }
+        _queueCollectionChangedHandling = true;
+        while (_queueCollectionChanged.size() > 0) {
+            final CollectionChangedEventArgs queueEventArgs = _queueCollectionChanged.poll();
+            _collectionChanged.onNext(queueEventArgs);
+        }
+        _queueCollectionChangedHandling = false;
+    }
+
     @Override
     public void OnItemModified(final int index) {
         synchronized (_locker) {
@@ -819,8 +884,8 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
     @Override
     public void OnItemModified(final int index, final T oldItem) {
         synchronized (_locker) {
-            if (_CollectionChanged.hasObservers()) {
-//                if (_AutoSort) {
+            if (_collectionChanged.hasObservers()) {
+//                if (_autoSort) {
 //                    set(index, get(index));
 //                } else {
                     OnCollectionChanged(new CollectionChangedEventArgs(this, CollectionChangedType.Setted, index, index,
@@ -829,4 +894,6 @@ public class SortedList<T> implements ICollectionChangedList<T>, ISortedCollecti
             }
         }
     }
+
+    //endregion
 }

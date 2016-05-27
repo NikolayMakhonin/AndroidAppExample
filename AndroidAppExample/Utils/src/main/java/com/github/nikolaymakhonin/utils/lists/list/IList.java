@@ -10,13 +10,13 @@ public interface IList<T> extends List<T>, Set<T> {
     
     int IndexOf(T item);
     
-    void RemoveAt(int index);
+    T RemoveAt(int index);
     
     void AddAll(Iterable<? extends T> collection);
     
     <T2 extends T> void AddAll(final T2[] collection);
 
-    boolean addAll(final int index, final T[] collection);
+    void AddAll(final int index, final T[] collection);
 
     void Sort();
     
