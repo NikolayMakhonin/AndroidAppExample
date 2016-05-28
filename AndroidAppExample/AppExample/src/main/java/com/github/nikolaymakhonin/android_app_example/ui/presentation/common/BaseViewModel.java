@@ -1,22 +1,9 @@
 package com.github.nikolaymakhonin.android_app_example.ui.presentation.common;
 
+import com.github.nikolaymakhonin.utils.contracts.patterns.BaseTreeModified;
 import com.github.nikolaymakhonin.utils.serialization.ISerializableModified;
 
-import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
-
-public abstract class BaseViewModel implements ISerializableModified {
-
-    //region Modified event
-
-    private final Subject _modifiedSubject = PublishSubject.create();
-
-    @Override
-    public Subject Modified() {
-        return _modifiedSubject;
-    }
-
-    //endregion
+public abstract class BaseViewModel extends BaseTreeModified implements ISerializableModified {
 
     //region Serialization
 
@@ -36,5 +23,5 @@ public abstract class BaseViewModel implements ISerializableModified {
 
     //endregion
 
-
 }
+

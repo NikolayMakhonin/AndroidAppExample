@@ -104,10 +104,10 @@ public class User extends BaseViewModel {
         //noinspection UnusedAssignment
         int version = reader.readInt();
 
-        _avatar = reader.ReadNullableURI();
-        _displayName = reader.ReadNullableString();
-        _id = reader.readLong();
-        _identityName = reader.ReadNullableString();
+        setAvatar(reader.ReadNullableURI());
+        setDisplayName(reader.ReadNullableString());
+        setId(reader.readLong());
+        setIdentityName(reader.ReadNullableString());
 
         return this;
     }

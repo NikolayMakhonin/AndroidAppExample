@@ -8,7 +8,7 @@ import com.github.nikolaymakhonin.utils.time.DateTime;
 
 import java.net.URI;
 
-import rx.Subscription;
+import rx.functions.Action0;
 
 public class InstagramPost extends BaseViewModel {
 
@@ -96,9 +96,9 @@ public class InstagramPost extends BaseViewModel {
 
     private Media _media;
 
-    private Subscription _mediaSubscription;
+    private Action0 _mediaUnBindFunc;
 
-    public Media getMedia() {
+    public Media   getMedia() {
         return _media;
     }
 
@@ -106,13 +106,15 @@ public class InstagramPost extends BaseViewModel {
         if (CompareUtils.EqualsObjects(_media, value)) {
             return;
         }
-        if (_mediaSubscription != null) {
-            _mediaSubscription.unsubscribe();
-            _mediaSubscription = null;
-        }
-        _media = value;
-        if (_media != null) {
-            _mediaSubscription = _media.Modified().subscribe(Modified());
+        synchronized (_propertySetLocker) {
+            if (_mediaUnBindFunc != null) {
+                _mediaUnBindFunc.call();
+                _mediaUnBindFunc = null;
+            }
+            _media = value;
+            if (_media != null) {
+                _mediaUnBindFunc = bindToTreeModified(_media.TreeModified());
+            }
         }
         Modified().onNext(null);
     }
@@ -123,9 +125,9 @@ public class InstagramPost extends BaseViewModel {
 
     private User _user;
 
-    private Subscription _userSubscription;
+    private Action0 _userUnBindFunc;
 
-    public User getUser() {
+    public User   getUser() {
         return _user;
     }
 
@@ -133,13 +135,15 @@ public class InstagramPost extends BaseViewModel {
         if (CompareUtils.EqualsObjects(_user, value)) {
             return;
         }
-        if (_userSubscription != null) {
-            _userSubscription.unsubscribe();
-            _userSubscription = null;
-        }
-        _user = value;
-        if (_user != null) {
-            _userSubscription = _user.Modified().subscribe(Modified());
+        synchronized (_propertySetLocker) {
+            if (_userUnBindFunc != null) {
+                _userUnBindFunc.call();
+                _userUnBindFunc = null;
+            }
+            _user = value;
+            if (_user != null) {
+                _userUnBindFunc = bindToTreeModified(_user.TreeModified());
+            }
         }
         Modified().onNext(null);
     }
@@ -170,13 +174,13 @@ public class InstagramPost extends BaseViewModel {
         //noinspection UnusedAssignment
         int version = reader.readInt();
 
-        _createdTime = reader.ReadNullableDateTime();
-        _postLink = reader.ReadNullableURI();
-        _postType = reader.readInt();
-        _title = reader.ReadNullableString();
+        setCreatedTime(reader.ReadNullableDateTime());
+        setPostLink(reader.ReadNullableURI());
+        setPostType(reader.readInt());
+        setTitle(reader.ReadNullableString());
 
-        setMedia(reader.ReadNullable(r -> (Media) new Media().DeSerialize(r)));
-        setUser(reader.ReadNullable(r -> (User) new User().DeSerialize(r)));
+        setMedia(reader.ReadNullable(r -> (Media)new Media().DeSerialize(r)));
+        setUser(reader.ReadNullable(r -> (User)new User().DeSerialize(r)));
 
         return this;
     }

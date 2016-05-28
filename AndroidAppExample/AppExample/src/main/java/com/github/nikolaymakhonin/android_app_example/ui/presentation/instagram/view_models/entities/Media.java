@@ -85,9 +85,9 @@ public class Media extends BaseViewModel {
         //noinspection UnusedAssignment
         int version = reader.readInt();
 
-        _height = reader.readInt();
-        _mediaLink = reader.ReadNullableURI();
-        _width = reader.readInt();
+        setHeight(reader.readInt());
+        setMediaLink(reader.ReadNullableURI());
+        setWidth(reader.readInt());
 
         return this;
     }
