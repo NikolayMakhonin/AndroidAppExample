@@ -2,6 +2,7 @@
   <dictionary name="Mika">
     <words>
       <w>cafbc</w>
+      <w>debounce</w>
       <w>decapitalize</w>
       <w>genymotion</w>
       <w>gson</w>
@@ -11,12 +12,14 @@
       <w>makhonin</w>
       <w>materialviewpager</w>
       <w>microedition</w>
+      <w>netflix</w>
       <w>nikolay</w>
       <w>opengles</w>
       <w>pagertitlestrip</w>
       <w>retrolambda</w>
       <w>robolectric</w>
       <w>squareup</w>
+      <w>ssub</w>
       <w>stackoverflow</w>
       <w>unparseable</w>
       <w>unsubscribe</w>

@@ -7,3 +7,4 @@ public interface IModified {
     Subject Modified();
 
 }
+
