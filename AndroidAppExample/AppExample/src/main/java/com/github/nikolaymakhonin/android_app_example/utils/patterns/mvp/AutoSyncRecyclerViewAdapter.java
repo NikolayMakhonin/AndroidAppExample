@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.presentation.common;
+package com.github.nikolaymakhonin.android_app_example.utils.patterns.mvp;
 
 import android.support.v7.widget.RecyclerView;
 
