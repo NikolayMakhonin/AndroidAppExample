@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.github.nikolaymakhonin.utils.CompareUtils;
 import com.github.nikolaymakhonin.utils.contracts.patterns.ITreeModified;
+import com.github.nikolaymakhonin.utils.rx.ListObservableOptimizer;
 import com.github.nikolaymakhonin.utils.lists.list.CollectionChangedEventArgs;
 import com.github.nikolaymakhonin.utils.lists.list.ICollectionChangedList;
 import com.github.nikolaymakhonin.utils.lists.list.SortedList;

@@ -5,6 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.nikolaymakhonin.utils.contracts.patterns.ITreeModified;
+import com.github.nikolaymakhonin.utils.contracts.patterns.mvp.IRecyclerViewAdapterFactory;
+import com.github.nikolaymakhonin.utils.contracts.patterns.mvp.ISinglePresenter;
+import com.github.nikolaymakhonin.utils.contracts.patterns.mvp.IView;
 import com.github.nikolaymakhonin.utils.lists.list.ICollectionChangedList;
 
 

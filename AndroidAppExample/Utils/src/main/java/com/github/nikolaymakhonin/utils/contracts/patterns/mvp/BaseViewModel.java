@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.presentation.common;
+package com.github.nikolaymakhonin.utils.contracts.patterns.mvp;
 
 import com.github.nikolaymakhonin.utils.contracts.patterns.BaseTreeModified;
 import com.github.nikolaymakhonin.utils.serialization.ISerializableModified;

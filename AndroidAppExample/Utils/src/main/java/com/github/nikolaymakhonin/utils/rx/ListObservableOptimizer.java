@@ -1,6 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.presentation.common;
-
-import android.support.annotation.NonNull;
+package com.github.nikolaymakhonin.utils.rx;
 
 import com.github.nikolaymakhonin.utils.CompareUtils;
 import com.github.nikolaymakhonin.utils.lists.list.CollectionChangedEventArgs;
@@ -128,7 +126,6 @@ public class ListObservableOptimizer<TItem> {
             });
     }
 
-    @NonNull
     private CollectionChangedEventArgs createResortEventArgs(Object list) {
         return new CollectionChangedEventArgs(
             list,

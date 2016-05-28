@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.presentation.common;
+package com.github.nikolaymakhonin.utils.contracts.patterns.mvp;
 
 import com.github.nikolaymakhonin.utils.CompareUtils;
 import com.github.nikolaymakhonin.utils.contracts.patterns.BaseTreeModified;

@@ -2,9 +2,9 @@ package com.github.nikolaymakhonin.android_app_example.di.factories.instagram;
 
 import android.view.ViewGroup;
 
-import com.github.nikolaymakhonin.android_app_example.presentation.common.IRecyclerViewAdapterFactory;
-import com.github.nikolaymakhonin.android_app_example.presentation.common.ISinglePresenter;
-import com.github.nikolaymakhonin.android_app_example.presentation.common.IView;
+import com.github.nikolaymakhonin.utils.contracts.patterns.mvp.IRecyclerViewAdapterFactory;
+import com.github.nikolaymakhonin.utils.contracts.patterns.mvp.ISinglePresenter;
+import com.github.nikolaymakhonin.utils.contracts.patterns.mvp.IView;
 import com.github.nikolaymakhonin.utils.contracts.patterns.ITreeModified;
 
 public class InstagramListFactory implements IRecyclerViewAdapterFactory {
