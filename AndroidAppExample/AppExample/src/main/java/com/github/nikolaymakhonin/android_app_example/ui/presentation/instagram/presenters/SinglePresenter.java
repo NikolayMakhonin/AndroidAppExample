@@ -1,9 +1,9 @@
 package com.github.nikolaymakhonin.android_app_example.ui.presentation.instagram.presenters;
 
+import com.github.nikolaymakhonin.android_app_example.ui.presentation.common.ISinglePresenter;
 import com.github.nikolaymakhonin.android_app_example.ui.presentation.common.IView;
 import com.github.nikolaymakhonin.utils.CompareUtils;
 import com.github.nikolaymakhonin.utils.contracts.patterns.BaseTreeModified;
-import com.github.nikolaymakhonin.utils.contracts.patterns.IDisposable;
 import com.github.nikolaymakhonin.utils.contracts.patterns.ITreeModified;
 import com.github.nikolaymakhonin.utils.rx.RxOperators;
 
@@ -13,12 +13,13 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
  * One view and one viewModel
  */
-public abstract class SinglePresenter<TView extends IView, TViewModel extends ITreeModified> extends BaseTreeModified implements IDisposable {
+public abstract class SinglePresenter<TView extends IView, TViewModel extends ITreeModified> extends BaseTreeModified implements ISinglePresenter<TView,TViewModel> {
 
     //region Update view subscription
 
@@ -46,10 +47,11 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
         _doUpdateViewSubscription = _doUpdateViewObservable
             .subscribe(o -> {
                 TView view = _view;
-                if (!isViewBind(view)) {
+                TViewModel viewModel = _viewModel;
+                if (!isViewBind(view, viewModel)) {
                     return;
                 }
-                updateView(view);
+                updateView(view, viewModel);
             });
     }
 
@@ -67,7 +69,7 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
     private Subscription _viewAttachedSubscription;
 
     private void bindView() {
-        if (!_allowBindView || _view == null) {
+        if (!_allowBindView || _view == null || _viewModel == null) {
             return;
         }
 
@@ -76,7 +78,7 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
                 Observable.just(_view.isAttached()),
                 _view.attachedObservable()
             )
-            .subscribe(attached -> {
+            .subscribe((Action1<Boolean>) attached -> {
                 synchronized (_propertySetLocker) {
                     if (attached) {
                         subscribeDoUpdateView();
@@ -95,7 +97,7 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
         unSubscribeDoUpdateView();
     }
 
-    protected abstract void updateView(TView view);
+    protected abstract void updateView(TView view, TViewModel viewModel);
 
     //endregion
 
@@ -105,10 +107,12 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
     private TView _view;
 
+    @Override
     public TView getView() {
         return _view;
     }
 
+    @Override
     public void setView(TView value) {
         if (CompareUtils.EqualsObjects(_view, value)) {
             return;
@@ -129,15 +133,21 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
     private Action0 _viewModelUnBindFunc;
 
+    @Override
     public TViewModel getViewModel() {
         return _viewModel;
     }
 
+    @Override
     public void setViewModel(TViewModel value) {
         if (CompareUtils.EqualsObjects(_viewModel, value)) {
             return;
         }
         synchronized (_propertySetLocker) {
+            boolean mustReBindView = _viewModel == null || value == null;
+            if (mustReBindView) {
+                unBindView();
+            }
             if (_viewModelUnBindFunc != null) {
                 _viewModelUnBindFunc.call();
                 _viewModelUnBindFunc = null;
@@ -145,6 +155,9 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
             _viewModel = value;
             if (_viewModel != null) {
                 _viewModelUnBindFunc = bindToTreeModified(_viewModel.TreeModified());
+            }
+            if (mustReBindView) {
+                bindView();
             }
         }
         Modified().onNext(null);
@@ -156,10 +169,12 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
     private boolean _allowBindView;
 
+    @Override
     public boolean isAllowBindView() {
         return _allowBindView;
     }
 
+    @Override
     public void setAllowBindView(boolean value) {
         if (CompareUtils.Equals(_allowBindView, value)) {
             return;
@@ -178,12 +193,13 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
     //region State properties
 
+    @Override
     public boolean isViewBind() {
-        return isViewBind(_view);
+        return isViewBind(_view, _viewModel);
     }
 
-    private boolean isViewBind(TView view) {
-        return _allowBindView && (view != null) && view.isAttached();
+    private boolean isViewBind(TView view, TViewModel viewModel) {
+        return _allowBindView && viewModel != null && (view != null) && view.isAttached();
     }
 
     //endregion
