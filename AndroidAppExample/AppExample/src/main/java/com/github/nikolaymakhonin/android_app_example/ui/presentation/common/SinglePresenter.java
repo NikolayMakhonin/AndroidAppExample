@@ -1,7 +1,5 @@
-package com.github.nikolaymakhonin.android_app_example.ui.presentation.instagram.presenters;
+package com.github.nikolaymakhonin.android_app_example.ui.presentation.common;
 
-import com.github.nikolaymakhonin.android_app_example.ui.presentation.common.ISinglePresenter;
-import com.github.nikolaymakhonin.android_app_example.ui.presentation.common.IView;
 import com.github.nikolaymakhonin.utils.CompareUtils;
 import com.github.nikolaymakhonin.utils.contracts.patterns.BaseTreeModified;
 import com.github.nikolaymakhonin.utils.contracts.patterns.ITreeModified;
@@ -97,7 +95,9 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
         unSubscribeDoUpdateView();
     }
 
-    protected abstract void updateView(TView view, TViewModel viewModel);
+    protected void updateView(TView view, TViewModel viewModel) {
+        view.updateView(viewModel);
+    }
 
     //endregion
 
@@ -154,7 +154,7 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
             }
             _viewModel = value;
             if (_viewModel != null) {
-                _viewModelUnBindFunc = bindToTreeModified(_viewModel.TreeModified());
+                _viewModelUnBindFunc = _treeModifiedMerger.attach(_viewModel.TreeModified());
             }
             if (mustReBindView) {
                 bindView();

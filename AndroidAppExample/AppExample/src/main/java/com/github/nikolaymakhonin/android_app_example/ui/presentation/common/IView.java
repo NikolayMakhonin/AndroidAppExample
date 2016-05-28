@@ -2,7 +2,7 @@ package com.github.nikolaymakhonin.android_app_example.ui.presentation.common;
 
 import rx.Observable;
 
-public interface IView<TPresenter> {
+public interface IView<TPresenter, TViewModel> {
 
     boolean isAttached();
 
@@ -11,4 +11,6 @@ public interface IView<TPresenter> {
     TPresenter getPresenter();
 
     void setPresenter(TPresenter value);
+
+    void updateView(TViewModel viewModel);
 }

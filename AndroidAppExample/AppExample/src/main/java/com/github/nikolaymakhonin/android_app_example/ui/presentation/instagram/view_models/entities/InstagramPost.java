@@ -113,7 +113,7 @@ public class InstagramPost extends BaseViewModel {
             }
             _media = value;
             if (_media != null) {
-                _mediaUnBindFunc = bindToTreeModified(_media.TreeModified());
+                _mediaUnBindFunc = _treeModifiedMerger.attach(_media.TreeModified());
             }
         }
         Modified().onNext(null);
@@ -142,7 +142,7 @@ public class InstagramPost extends BaseViewModel {
             }
             _user = value;
             if (_user != null) {
-                _userUnBindFunc = bindToTreeModified(_user.TreeModified());
+                _userUnBindFunc = _treeModifiedMerger.attach(_user.TreeModified());
             }
         }
         Modified().onNext(null);

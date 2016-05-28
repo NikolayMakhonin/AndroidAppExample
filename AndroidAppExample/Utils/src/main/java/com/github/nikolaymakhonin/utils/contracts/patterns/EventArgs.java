@@ -4,7 +4,7 @@ public class EventArgs {
 
     protected final Object _object;
 
-    private Object getObject() {
+    public Object getObject() {
         return _object;
     }
 

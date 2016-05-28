@@ -1,10 +1,8 @@
 package com.github.nikolaymakhonin.utils.contracts.patterns;
 
-import com.github.nikolaymakhonin.utils.RefParam;
-import com.github.nikolaymakhonin.utils.rx.RxOperators;
+import com.github.nikolaymakhonin.utils.rx.DynamicObservablesMerger;
 
 import rx.Observable;
-import rx.functions.Action0;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
@@ -21,24 +19,11 @@ public abstract class BaseTreeModified implements ITreeModified {
         return _modifiedSubject;
     }
 
-    private final Subject<Observable, Observable> _modifiedObservables = PublishSubject.create();
-    private final Observable                      _treeModifiedSubject = Observable.merge((Observable<? extends Observable<?>>) _modifiedObservables);
-
-    /** Return unBind func */
-    protected Action0 bindToTreeModified(Observable modifiedObservable) {
-        RefParam<Action0> doComplete = new RefParam<>();
-
-        Observable completable = RxOperators.toCompletable(modifiedObservable, doComplete);
-
-        //bind modifiedObservable to _treeModifiedSubject
-        _modifiedObservables.onNext(completable);
-
-        return doComplete.value;
-    }
+    protected final DynamicObservablesMerger _treeModifiedMerger = new DynamicObservablesMerger(_modifiedSubject);
 
     @Override
     public Observable TreeModified() {
-        return _treeModifiedSubject;
+        return _treeModifiedMerger.observable();
     }
 
     //endregion
