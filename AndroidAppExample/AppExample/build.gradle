@@ -123,6 +123,9 @@ dependencies {
 
     compile project(':CommonDI')
 
+    // http://mvnrepository.com/artifact/com.squareup.okhttp/okhttp
+    compile group: 'com.squareup.okhttp', name: 'okhttp', version: '2.7.5'
+
     //endregion
 }
 

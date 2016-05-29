@@ -6,8 +6,10 @@ import com.github.nikolaymakhonin.common_di.scopes.PerService;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
+import dagger.Module;
 import dagger.Provides;
 
+@Module
 public class HttpModule {
 
     @Provides
