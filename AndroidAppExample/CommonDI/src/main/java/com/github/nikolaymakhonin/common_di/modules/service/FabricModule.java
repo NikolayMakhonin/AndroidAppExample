@@ -49,6 +49,7 @@ public class FabricModule {
             // Send to Fabric all the errors from the log
             Log.getLogObservable().subscribe(logObserver);
         }
+
         return instance;
     }
 

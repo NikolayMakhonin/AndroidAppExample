@@ -15,7 +15,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import rx.observables.ConnectableObservable;
 
 /**
  * One view and one viewModel
@@ -32,31 +32,47 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
     //region Update view subscription
 
-    private Observable<Pair<TView, TViewModel>> createDoUpdateViewObservable() {
-        Observable dataStream = Observable.merge(
+    private Subscription _doUpdateViewObservableReplaySubscription;
+
+    private ConnectableObservable _doUpdateViewObservableReplay;
+
+    private Observable<Pair<TView, TViewModel>> _doUpdateViewObservable;
+
+    private boolean _doUpdateViewObservableInitialized;
+
+    private void initDoUpdateViewObservable() {
+        if (_doUpdateViewObservableInitialized) {
+            return;
+        }
+
+        _doUpdateViewObservableInitialized = true;
+
+        ConnectableObservable doUpdateViewObservableReplay = Observable.merge(
             Observable.just(null),
             TreeModified()
         )
             .filter(o -> isViewBind())
-            .replay(1)
+            .replay(1);
+
+        //noinspection RedundantCast
+        Observable<Pair<TView, TViewModel>> doUpdateViewObservable = doUpdateViewObservableReplay
             .lift(RxOperators.deferred(250, TimeUnit.MILLISECONDS))
             .filter(o -> isViewBind())
-            .subscribeOn(Schedulers.computation())
             .map(o -> new Pair<>(_view, _viewModel))
             .filter((Func1<Pair<TView, TViewModel>, Boolean>)p -> isViewBind(p.getValue0(), p.getValue1()));
-        dataStream = preUpdateView(dataStream);
-        dataStream.observeOn(AndroidSchedulers.mainThread());
-        return dataStream;
-    }
+        doUpdateViewObservable = preUpdateView(doUpdateViewObservable);
+        doUpdateViewObservable.observeOn(AndroidSchedulers.mainThread());
 
-    private Observable<Pair<TView, TViewModel>> _doUpdateViewObservable;
+        _doUpdateViewObservableReplay = doUpdateViewObservableReplay;
+        _doUpdateViewObservable = doUpdateViewObservable;
+    }
 
     private Subscription _doUpdateViewSubscription;
 
     private void subscribeDoUpdateView() {
-        if (_doUpdateViewObservable == null) {
-            _doUpdateViewObservable = createDoUpdateViewObservable();
-        }
+        initDoUpdateViewObservable();
+        _doUpdateViewObservableReplaySubscription = _doUpdateViewObservableReplay.connect();
+        //noinspection RedundantCast
         _doUpdateViewSubscription = _doUpdateViewObservable
             .subscribe((Action1<Pair<TView, TViewModel>>)p -> {
                 TView view = p.getValue0();
@@ -69,6 +85,9 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
     }
 
     private void unSubscribeDoUpdateView() {
+        if (_doUpdateViewObservableReplaySubscription != null) {
+            _doUpdateViewObservableReplaySubscription.unsubscribe();
+        }
         if (_doUpdateViewSubscription != null) {
             _doUpdateViewSubscription.unsubscribe();
             _doUpdateViewSubscription = null;
@@ -90,6 +109,7 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
             return;
         }
 
+        //noinspection RedundantCast
         _viewAttachedSubscription =
             Observable.merge(
                 Observable.just(_view.isAttached()),

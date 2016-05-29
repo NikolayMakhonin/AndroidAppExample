@@ -24,7 +24,9 @@ public class App extends MultiDexApplication implements IHasAppComponentBase<App
     public void onCreate() {
         super.onCreate();
 
-        Log.d("CounterApp", "onCreate");
+        Log.d("App", "onCreate");
+
+        Thread.setDefaultUncaughtExceptionHandler(Log.uncaughtExceptionHandler);
 
         _appComponent = ComponentsFactory.buildAppComponent(this);
 

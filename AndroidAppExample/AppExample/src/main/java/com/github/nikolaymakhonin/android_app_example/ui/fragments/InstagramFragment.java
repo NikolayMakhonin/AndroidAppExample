@@ -16,6 +16,7 @@ import com.github.nikolaymakhonin.android_app_example.di.components.AppComponent
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.presenters.InstagramListAdapter;
 import com.github.nikolaymakhonin.android_app_example.ui.contracts.IFragmentWithHeader;
 import com.github.nikolaymakhonin.android_app_example.ui.contracts.IHasTitle;
+import com.github.nikolaymakhonin.android_app_example.ui.controls.RecyclerViewMaterialAdapterExt;
 import com.github.nikolaymakhonin.common_di.contracts.IHasAppComponentBase;
 
 public class InstagramFragment extends Fragment implements IHasTitle, IFragmentWithHeader {
@@ -88,7 +89,7 @@ public class InstagramFragment extends Fragment implements IHasTitle, IFragmentW
         _recyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
         _recyclerView.setHasFixedSize(true);
         _instagramListAdapter = _appComponent.getInstagramComponent().createInstagramListAdapter();
-        _recyclerViewMaterialAdapter = new RecyclerViewMaterialAdapter(_instagramListAdapter);
+        _recyclerViewMaterialAdapter = new RecyclerViewMaterialAdapterExt(_instagramListAdapter);
         _recyclerView.setAdapter(_recyclerViewMaterialAdapter);
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), _recyclerView, null);
     }

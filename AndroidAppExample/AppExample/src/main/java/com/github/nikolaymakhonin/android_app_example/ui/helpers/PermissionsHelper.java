@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.observables.ConnectableObservable;
 
 public class PermissionsHelper {
 
@@ -42,11 +43,14 @@ public class PermissionsHelper {
 
             final int requestCode = _nextRequestCode++;
 
-            Observable<Boolean> resultObservable = ((IActivityPermissionsCallback)activity).getRequestPermissionsObservable()
+            ConnectableObservable<Boolean> resultObservable = ((IActivityPermissionsCallback)activity).getRequestPermissionsObservable()
                 .filter(requestResult -> requestResult.requestCode == requestCode)
                 .first()
                 .map(requestResult -> requestResult.isGranted())
                 .replay(1);
+
+            //Create subscription for replay operator. It may not unsubscribe because applying the operator first()
+            resultObservable.connect();
 
             ActivityCompat.requestPermissions(
                 activity,

@@ -4,8 +4,6 @@ import com.github.nikolaymakhonin.utils.CompareUtils;
 import com.github.nikolaymakhonin.utils.lists.list.CollectionChangedEventArgs;
 import com.github.nikolaymakhonin.utils.lists.list.CollectionChangedType;
 import com.github.nikolaymakhonin.utils.lists.list.ICollectionChangedList;
-import com.github.nikolaymakhonin.utils.rx.DynamicObservablesMerger;
-import com.github.nikolaymakhonin.utils.rx.RxOperators;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +14,6 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
@@ -95,8 +92,9 @@ public class ListObservableOptimizer<TItem> {
     private final List<CollectionChangedEventArgs> _collectionChangedQueue = new ArrayList<>();
 
     public Observable observable() {
+        //noinspection RedundantCast
         return _collectionChangedMerger.observable()
-            .doOnNext((Action1<CollectionChangedEventArgs>) e -> {
+            .map((Func1<CollectionChangedEventArgs, CollectionChangedEventArgs>) e -> {
                 synchronized (_locker) {
                     if (_collectionChangedQueue.size() != 1
                         || _collectionChangedQueue.get(0).getChangedType() != CollectionChangedType.Resorted)
@@ -111,10 +109,10 @@ public class ListObservableOptimizer<TItem> {
                         _collectionChangedQueue.add(e);
                     }
                 }
+                return e;
             })
             .map(o -> null)
             .lift(RxOperators.deferred(250, TimeUnit.MILLISECONDS))
-            .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap((Func1<CollectionChangedEventArgs, Observable<CollectionChangedEventArgs>>) e -> {
                 synchronized (_locker) {

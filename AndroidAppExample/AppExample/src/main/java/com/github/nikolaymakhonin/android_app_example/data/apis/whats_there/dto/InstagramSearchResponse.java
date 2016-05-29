@@ -154,7 +154,7 @@ public class InstagramSearchResponse {
             @SerializedName("longitude")
             public double longitude;
             @SerializedName("id")
-            public int    id;
+            public long    id;
         }
 
         public static class Comments {

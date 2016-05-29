@@ -33,7 +33,6 @@ import io.fabric.sdk.android.Fabric;
 import rebus.header.view.HeaderCompactView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
@@ -217,7 +216,6 @@ public class MainActivity extends RxAppCompatActivity implements IActivityPermis
 
     private final Observable<RequestPermissionsResult> _requestPermissionsObservable = _requestPermissionsSubject
             .compose(bindUntilEvent(ActivityEvent.DESTROY))
-            .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread());
 
     @Override
