@@ -47,7 +47,7 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
         _doUpdateViewObservableInitialized = true;
 
-        ConnectableObservable doUpdateViewObservableReplay = Observable.merge(
+        ConnectableObservable doUpdateViewObservableReplay = Observable.concatEager(
             Observable.just(null),
             TreeModified()
         )
@@ -111,7 +111,7 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
         //noinspection RedundantCast
         _viewAttachedSubscription =
-            Observable.merge(
+            Observable.concatEager(
                 Observable.just(_view.isAttached()),
                 _view.attachedObservable()
             )

@@ -29,7 +29,7 @@ public final class RxOperators {
         Subject   forceCompleteSubject = PublishSubject.create();
 
         //Convert to completable
-        Observable completable = Observable.merge(observable, forceCompleteSubject).takeUntil(o -> completed[0]);
+        Observable completable = Observable.concatEager(observable, forceCompleteSubject).takeUntil(o -> completed[0]);
 
         outCompleteAction.value = () -> {
             //bindObservable will completed before next emit

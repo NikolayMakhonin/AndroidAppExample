@@ -20,7 +20,7 @@ public class DynamicObservablesMerger<T>  {
         _modifiedObservablesBuffer.connect();
 
         _treeModifiedSubject = Observable
-            .merge(_modifiedObservablesBuffer);
+            .concatEager(_modifiedObservablesBuffer);
 
         for (Observable<T> baseAttachedObservable : baseAttachedObservables) {
             attach(baseAttachedObservable);
