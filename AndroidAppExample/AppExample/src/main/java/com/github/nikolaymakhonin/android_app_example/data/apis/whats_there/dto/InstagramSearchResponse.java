@@ -98,7 +98,7 @@ public class InstagramSearchResponse {
         @SerializedName("videos")
         public MediaSamples videos;
         @SerializedName("type")
-        public PostType     type;
+        public PostType     postType;
         @SerializedName("location")
         public Location     location;
         @SerializedName("comments")
@@ -171,9 +171,9 @@ public class InstagramSearchResponse {
             @SerializedName("username")
             public String username;
             @SerializedName("profile_picture")
-            public String profilePicture;
+            public URI profilePicture;
             @SerializedName("id")
-            public String id;
+            public long id;
             @SerializedName("full_name")
             public String fullName;
         }
