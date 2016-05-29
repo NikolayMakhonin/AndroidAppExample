@@ -75,9 +75,7 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
             @Override
             public boolean onPreDraw() {
                 _imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                _imageLayoutWidth = _imageView.getWidth();
-                _imageLayoutHeight = _imageView.getHeight();
-                loadImageByUri(true);
+                initImageView();
                 return false;
             }
         });
@@ -88,6 +86,18 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
     }
 
     //endregion
+
+    private boolean _imageViewInitialized;
+
+    private void initImageView() {
+        if (_imageViewInitialized) {
+            return;
+        }
+        _imageViewInitialized = true;
+        _imageLayoutWidth = _imageView.getWidth();
+        _imageLayoutHeight = _imageView.getHeight();
+        loadImageByUri(true);
+    }
 
     //region Attached
 
