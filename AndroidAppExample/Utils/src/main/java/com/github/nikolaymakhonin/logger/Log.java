@@ -16,7 +16,7 @@ public class Log {
         tagPrefix = "Mika.";
         logger = new LogConsole();
 //        try {
-//            ClassLoader.getSystemClassLoader().loadClass("android.util.Log");
+//            ClassLoader.getSystemClassLoader().loadClass("com.github.nikolaymakhonin.logger.Log");
 //            logger = new LogAndroid();
 //        } catch (final ClassNotFoundException e) {
 //            logger = new LogConsole();

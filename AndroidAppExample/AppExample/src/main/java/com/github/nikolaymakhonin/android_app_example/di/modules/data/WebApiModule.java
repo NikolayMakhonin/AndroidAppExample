@@ -1,4 +1,4 @@
-package com.github.nikolaymakhonin.android_app_example.di.modules;
+package com.github.nikolaymakhonin.android_app_example.di.modules.data;
 
 import com.github.nikolaymakhonin.android_app_example.data.apis.converters.CombineConverterFactory;
 import com.github.nikolaymakhonin.android_app_example.data.apis.whats_there.WhatsThereApi;

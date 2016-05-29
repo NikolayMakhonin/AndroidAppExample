@@ -36,6 +36,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -69,6 +70,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.android.support:cardview-v7:23.3.0'
+    compile 'com.android.support:multidex:1.0.1'
 
     //see: https://github.com/rebus007/HeaderView
     compile 'rebus:header-view:1.1.4'
@@ -101,6 +103,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:9.0.0'
     //Google Maps:
     compile 'com.google.android.gms:play-services-maps:9.0.0'
+
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     //endregion
 

@@ -8,8 +8,8 @@ import com.github.nikolaymakhonin.common_di.scopes.PerService;
 
 import dagger.Component;
 
-@Component(modules = { ServiceModule.class })
 @PerService
+@Component(modules = { ServiceModule.class })
 public interface ServiceComponent extends ServiceComponentBase
 {
     WhatsThereApi getWhatsThereApi();

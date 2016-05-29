@@ -5,8 +5,8 @@ import com.github.nikolaymakhonin.common_di.scopes.PerApplication;
 
 import dagger.Component;
 
-@Component(dependencies = {ServiceComponentBase.class}, modules = { AppModuleBase.class })
 @PerApplication
+@Component(dependencies = {ServiceComponentBase.class}, modules = { AppModuleBase.class })
 public interface AppComponentBase extends ServiceComponentBase {
 
 }

@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
     </style>
 
-    <!-- region Application theme. -->
+    <!-- region App theme. -->
 
     <style name="AppDefault" parent="AppTheme">
         <!-- region Common -->

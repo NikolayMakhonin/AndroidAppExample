@@ -8,8 +8,8 @@ import com.github.nikolaymakhonin.common_di.scopes.PerService;
 import dagger.Component;
 import io.fabric.sdk.android.Fabric;
 
-@Component(modules = { ServiceModuleBase.class })
 @PerService
+@Component(modules = { ServiceModuleBase.class })
 public interface ServiceComponentBase {
     Context getApplicationContext();
     /** Run it in application onCreate if you want initialize Fabric */

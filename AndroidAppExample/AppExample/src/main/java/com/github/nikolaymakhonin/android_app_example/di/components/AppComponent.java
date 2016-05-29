@@ -8,10 +8,11 @@ import com.github.nikolaymakhonin.common_di.scopes.PerApplication;
 
 import dagger.Component;
 
-@Component(dependencies = { ServiceComponent.class }, modules = { AppModule.class })
 @PerApplication
+@Component(dependencies = { ServiceComponent.class }, modules = { AppModule.class })
 public interface AppComponent extends AppComponentBase, ServiceComponent
 {
     EventBus getEventBus();
+    InstagramComponent getInstagramComponent();
 }
 

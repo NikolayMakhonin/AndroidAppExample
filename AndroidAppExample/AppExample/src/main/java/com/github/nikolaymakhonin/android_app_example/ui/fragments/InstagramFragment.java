@@ -12,8 +12,11 @@ import android.view.ViewGroup;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.github.nikolaymakhonin.android_app_example.R;
+import com.github.nikolaymakhonin.android_app_example.di.components.AppComponent;
+import com.github.nikolaymakhonin.android_app_example.presentation.instagram.presenters.InstagramListAdapter;
 import com.github.nikolaymakhonin.android_app_example.ui.contracts.IFragmentWithHeader;
 import com.github.nikolaymakhonin.android_app_example.ui.contracts.IHasTitle;
+import com.github.nikolaymakhonin.common_di.contracts.IHasAppComponentBase;
 
 public class InstagramFragment extends Fragment implements IHasTitle, IFragmentWithHeader {
 
@@ -21,9 +24,12 @@ public class InstagramFragment extends Fragment implements IHasTitle, IFragmentW
     private static final int HEADER_COLOR = R.color.toolBarForBackground8;
     private static final int HEADER_DRAWABLE = R.drawable.navigation_header_background_8;
 
-    private View _contentView;
-    private RecyclerView _recyclerView;
+    private View                        _contentView;
+    private RecyclerView                _recyclerView;
     private RecyclerViewMaterialAdapter _recyclerViewMaterialAdapter;
+    private InstagramListAdapter        _instagramListAdapter;
+
+    private AppComponent _appComponent;
 
     //region Override methods
 
@@ -63,18 +69,26 @@ public class InstagramFragment extends Fragment implements IHasTitle, IFragmentW
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
         @Nullable Bundle savedInstanceState)
     {
+        _appComponent = ((IHasAppComponentBase<AppComponent>)getContext().getApplicationContext()).getAppComponent();
+
         _contentView = inflater.inflate(LAYOUT, container, false);
         initControls();
 
         return _contentView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        _instagramListAdapter.loadByGeo(22.277872, 114.1762067, 1000);
+    }
+
     private void initControls() {
         _recyclerView = (RecyclerView) _contentView.findViewById(R.id.recyclerView);
         _recyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
         _recyclerView.setHasFixedSize(true);
-        //TODO: take from di - RecyclerView.Adapter recyclerViewAdapter = new InstagramListAdapterOld();
-        //TODO: _recyclerViewMaterialAdapter = new RecyclerViewMaterialAdapter(recyclerViewAdapter);
+        _instagramListAdapter = _appComponent.getInstagramComponent().createInstagramListAdapter();
+        _recyclerViewMaterialAdapter = new RecyclerViewMaterialAdapter(_instagramListAdapter);
         _recyclerView.setAdapter(_recyclerViewMaterialAdapter);
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), _recyclerView, null);
     }

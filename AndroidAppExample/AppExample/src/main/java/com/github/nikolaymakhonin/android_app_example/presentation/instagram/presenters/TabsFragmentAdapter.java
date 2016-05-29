@@ -3,7 +3,7 @@ package com.github.nikolaymakhonin.android_app_example.presentation.instagram.pr
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
+import com.github.nikolaymakhonin.logger.Log;
 
 import com.github.nikolaymakhonin.android_app_example.ui.contracts.IHasTitle;
 import com.github.nikolaymakhonin.android_app_example.ui.fragments.GoogleMapFragment;

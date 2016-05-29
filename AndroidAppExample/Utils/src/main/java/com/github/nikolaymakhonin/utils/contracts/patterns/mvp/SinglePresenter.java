@@ -5,6 +5,8 @@ import com.github.nikolaymakhonin.utils.contracts.patterns.BaseTreeModified;
 import com.github.nikolaymakhonin.utils.contracts.patterns.ITreeModified;
 import com.github.nikolaymakhonin.utils.rx.RxOperators;
 
+import org.javatuples.Pair;
+
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -12,6 +14,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -19,10 +22,18 @@ import rx.schedulers.Schedulers;
  */
 public abstract class SinglePresenter<TView extends IView, TViewModel extends ITreeModified> extends BaseTreeModified implements ISinglePresenter<TView,TViewModel> {
 
+    //region Data stream transformation
+
+    protected Observable<Pair<TView, TViewModel>> preUpdateView(Observable<Pair<TView, TViewModel>> dataStream) {
+        return dataStream;
+    }
+
+    //endregion
+
     //region Update view subscription
 
-    private Observable<TView> createDoUpdateViewObservable() {
-        return Observable.merge(
+    private Observable<Pair<TView, TViewModel>> createDoUpdateViewObservable() {
+        Observable dataStream = Observable.merge(
             Observable.just(null),
             TreeModified()
         )
@@ -31,10 +42,14 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
             .lift(RxOperators.deferred(250, TimeUnit.MILLISECONDS))
             .filter(o -> isViewBind())
             .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread());
+            .map(o -> new Pair<>(_view, _viewModel))
+            .filter((Func1<Pair<TView, TViewModel>, Boolean>)p -> isViewBind(p.getValue0(), p.getValue1()));
+        dataStream = preUpdateView(dataStream);
+        dataStream.observeOn(AndroidSchedulers.mainThread());
+        return dataStream;
     }
 
-    private Observable<TView> _doUpdateViewObservable;
+    private Observable<Pair<TView, TViewModel>> _doUpdateViewObservable;
 
     private Subscription _doUpdateViewSubscription;
 
@@ -43,9 +58,9 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
             _doUpdateViewObservable = createDoUpdateViewObservable();
         }
         _doUpdateViewSubscription = _doUpdateViewObservable
-            .subscribe(o -> {
-                TView view = _view;
-                TViewModel viewModel = _viewModel;
+            .subscribe((Action1<Pair<TView, TViewModel>>)p -> {
+                TView view = p.getValue0();
+                TViewModel viewModel = p.getValue1();
                 if (!isViewBind(view, viewModel)) {
                     return;
                 }
@@ -58,6 +73,10 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
             _doUpdateViewSubscription.unsubscribe();
             _doUpdateViewSubscription = null;
         }
+    }
+
+    protected void updateView(TView view, TViewModel viewModel) {
+        view.updateView(viewModel);
     }
 
     //endregion
@@ -93,10 +112,6 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
             _viewAttachedSubscription = null;
         }
         unSubscribeDoUpdateView();
-    }
-
-    protected void updateView(TView view, TViewModel viewModel) {
-        view.updateView(viewModel);
     }
 
     //endregion
