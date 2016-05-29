@@ -6,6 +6,8 @@ import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.github.nikolaymakhonin.android_app_example.R;
 import com.github.nikolaymakhonin.android_app_example.di.components.AppComponent;
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.data.InstagramPost;
+import com.github.nikolaymakhonin.android_app_example.presentation.instagram.data.Media;
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.presenters.InstagramPostPresenter;
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.views.IInstagramPostView;
 import com.github.nikolaymakhonin.common_di.contracts.IHasAppComponentBase;
@@ -29,8 +32,10 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
     private CardView     _cardView;
     private TextView     _titleTextView;
     private ImageView    _imageView;
-    private URI          _currentMediaLink;
+    private URI          _currentImageUri;
     private AppComponent _appComponent;
+    private int          _imageLayoutWidth;
+    private int          _imageLayoutHeight;
 
     //region Constructors
 
@@ -60,11 +65,26 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
     //region Init Controls
 
     private void initControls() {
-        _appComponent = ((IHasAppComponentBase<AppComponent>)getContext().getApplicationContext()).getAppComponent();
+        _appComponent = ((IHasAppComponentBase<AppComponent>) getContext().getApplicationContext()).getAppComponent();
         LayoutInflater.from(getContext()).inflate(R.layout.instagram_post, this, true);
         _cardView = (CardView) findViewById(R.id.cardView);
         _titleTextView = (TextView) findViewById(R.id.title);
         _imageView = (ImageView) findViewById(R.id.image);
+
+        _imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                _imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                _imageLayoutWidth = _imageView.getWidth();
+                _imageLayoutHeight = _imageView.getHeight();
+                loadImageByUri(true);
+                return false;
+            }
+        });
+
+        ViewGroup.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT);
+        setLayoutParams(layoutParams);
     }
 
     //endregion
@@ -117,16 +137,31 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
 
     //region Update View
 
+    private void loadImageByUri(boolean force) {
+        InstagramPost instagramPost = _instagramPost;
+        if (_imageLayoutHeight <= 0 && _imageLayoutWidth <= 0 || instagramPost == null) {
+            return;
+        }
+        Media media = instagramPost.getMedia();
+        URI imageUri = media.getMediaLink();
+        if (imageUri == null) {
+            _imageView.setImageDrawable(null);
+            _currentImageUri = null;
+        } else if (force || !CompareUtils.EqualsObjects(imageUri, _currentImageUri)) {
+            _currentImageUri = imageUri;
+            int imageWidth = _imageLayoutWidth;
+            int imageHeight = (media.getHeight() * imageWidth) / media.getWidth();
+            _appComponent.getPicasso().load(imageUri.toString()).resize(imageWidth, imageHeight).into(_imageView);
+        }
+    }
+
+    private InstagramPost _instagramPost;
+
     @Override
     public void updateView(InstagramPost instagramPost) {
+        _instagramPost = instagramPost;
         _titleTextView.setText(instagramPost.getTitle());
-        URI mediaLink = instagramPost.getMedia().getMediaLink();
-        if (mediaLink == null) {
-            _imageView.setImageDrawable(null);
-        } else if (!CompareUtils.EqualsObjects(mediaLink, _currentMediaLink)) {
-            _currentMediaLink = mediaLink;
-            _appComponent.getPicasso().load(mediaLink.toString()).into(_imageView);
-        }
+        loadImageByUri(false);
     }
 
     //endregion
