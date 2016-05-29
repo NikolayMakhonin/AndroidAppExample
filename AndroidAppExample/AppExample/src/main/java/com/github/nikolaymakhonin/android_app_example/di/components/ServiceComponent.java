@@ -5,6 +5,8 @@ import com.github.nikolaymakhonin.android_app_example.data.apis.whats_there.What
 import com.github.nikolaymakhonin.android_app_example.di.modules.ServiceModule;
 import com.github.nikolaymakhonin.common_di.components.ServiceComponentBase;
 import com.github.nikolaymakhonin.common_di.scopes.PerService;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 
 import dagger.Component;
 
@@ -13,4 +15,6 @@ import dagger.Component;
 public interface ServiceComponent extends ServiceComponentBase
 {
     WhatsThereApi getWhatsThereApi();
+    OkHttpDownloader getOkHttpDownloader();
+    Picasso getPicasso();
 }

@@ -11,11 +11,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.nikolaymakhonin.android_app_example.R;
+import com.github.nikolaymakhonin.android_app_example.di.components.AppComponent;
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.data.InstagramPost;
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.presenters.InstagramPostPresenter;
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.views.IInstagramPostView;
+import com.github.nikolaymakhonin.common_di.contracts.IHasAppComponentBase;
 import com.github.nikolaymakhonin.utils.CompareUtils;
-import com.squareup.picasso.Picasso;
 
 import java.net.URI;
 
@@ -25,10 +26,11 @@ import rx.subjects.Subject;
 
 public class InstagramPostView extends RelativeLayout implements IInstagramPostView {
 
-    private CardView  _cardView;
-    private TextView  _titleTextView;
-    private ImageView _imageView;
-    private URI       _currentMediaLink;
+    private CardView     _cardView;
+    private TextView     _titleTextView;
+    private ImageView    _imageView;
+    private URI          _currentMediaLink;
+    private AppComponent _appComponent;
 
     //region Constructors
 
@@ -58,6 +60,7 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
     //region Init Controls
 
     private void initControls() {
+        _appComponent = ((IHasAppComponentBase<AppComponent>)getContext().getApplicationContext()).getAppComponent();
         LayoutInflater.from(getContext()).inflate(R.layout.instagram_post, this, true);
         _cardView = (CardView) findViewById(R.id.cardView);
         _titleTextView = (TextView) findViewById(R.id.title);
@@ -79,7 +82,7 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
 
     @Override
     public Observable<Boolean> attachedObservable() {
-        return null;
+        return _attachedSubject;
     }
 
     @Override
@@ -122,7 +125,7 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
             _imageView.setImageDrawable(null);
         } else if (!CompareUtils.EqualsObjects(mediaLink, _currentMediaLink)) {
             _currentMediaLink = mediaLink;
-            Picasso.with(getContext().getApplicationContext()).load(mediaLink.toString()).into(_imageView);
+            _appComponent.getPicasso().load(mediaLink.toString()).into(_imageView);
         }
     }
 

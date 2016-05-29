@@ -37,14 +37,14 @@ public class DynamicObservablesMerger<T>  {
     public Action0 attach(Observable<T> modifiedObservable) {
         RefParam<Action0> doComplete = new RefParam<>();
 
-        Observable<T> completable = RxOperators.toCompletable(modifiedObservable, doComplete);
+        final Observable<T> completable = RxOperators.toCompletable(modifiedObservable, doComplete);
 
         //bind modifiedObservable to _treeModifiedSubject
         _modifiedObservables.onNext(completable);
 
         return () -> {
             doComplete.value.call();
-            _modifiedObservablesBuffer.remove(o -> CompareUtils.EqualsObjects(o, modifiedObservable));
+            _modifiedObservablesBuffer.remove(o -> CompareUtils.EqualsObjects(o, completable));
         };
     }
 

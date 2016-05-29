@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
-import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.github.nikolaymakhonin.android_app_example.R;
 import com.github.nikolaymakhonin.android_app_example.di.components.AppComponent;
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.presenters.InstagramListAdapter;
@@ -27,7 +26,7 @@ public class InstagramFragment extends Fragment implements IHasTitle, IFragmentW
 
     private View                        _contentView;
     private RecyclerView                _recyclerView;
-    private RecyclerViewMaterialAdapter _recyclerViewMaterialAdapter;
+    private RecyclerViewMaterialAdapterExt _recyclerViewMaterialAdapter;
     private InstagramListAdapter        _instagramListAdapter;
 
     private AppComponent _appComponent;

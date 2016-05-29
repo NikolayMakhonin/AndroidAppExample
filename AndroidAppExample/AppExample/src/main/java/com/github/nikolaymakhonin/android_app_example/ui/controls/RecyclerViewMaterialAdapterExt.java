@@ -167,36 +167,36 @@ public class RecyclerViewMaterialAdapterExt extends RecyclerView.Adapter<Recycle
                 @Override
                 public void onChanged() {
                     super.onChanged();
-                    unregisterAdapterDataObserver(_innerAdapterObserver);
+                    unregisterAdapterDataObserver(_adapterObserver);
                     notifyDataSetChanged();
-                    registerAdapterDataObserver(_innerAdapterObserver);
+                    registerAdapterDataObserver(_adapterObserver);
                 }
 
                 @Override
                 public void onItemRangeChanged(int positionStart, int itemCount) {
                     super.onItemRangeChanged(positionStart, itemCount);
                     positionStart += mPlaceholderSize;
-                    unregisterAdapterDataObserver(_innerAdapterObserver);
+                    unregisterAdapterDataObserver(_adapterObserver);
                     notifyItemRangeChanged(positionStart, itemCount);
-                    registerAdapterDataObserver(_innerAdapterObserver);
+                    registerAdapterDataObserver(_adapterObserver);
                 }
 
                 @Override
                 public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
                     super.onItemRangeChanged(positionStart, itemCount, payload);
                     positionStart += mPlaceholderSize;
-                    unregisterAdapterDataObserver(_innerAdapterObserver);
+                    unregisterAdapterDataObserver(_adapterObserver);
                     notifyItemRangeChanged(positionStart, itemCount, payload);
-                    registerAdapterDataObserver(_innerAdapterObserver);
+                    registerAdapterDataObserver(_adapterObserver);
                 }
 
                 @Override
                 public void onItemRangeInserted(int positionStart, int itemCount) {
                     super.onItemRangeInserted(positionStart, itemCount);
                     positionStart += mPlaceholderSize;
-                    unregisterAdapterDataObserver(_innerAdapterObserver);
+                    unregisterAdapterDataObserver(_adapterObserver);
                     notifyItemRangeInserted(positionStart, itemCount);
-                    registerAdapterDataObserver(_innerAdapterObserver);
+                    registerAdapterDataObserver(_adapterObserver);
                 }
 
                 @Override
@@ -207,18 +207,18 @@ public class RecyclerViewMaterialAdapterExt extends RecyclerView.Adapter<Recycle
                     super.onItemRangeMoved(fromPosition, toPosition, itemCount);
                     fromPosition += mPlaceholderSize;
                     toPosition += mPlaceholderSize;
-                    unregisterAdapterDataObserver(_innerAdapterObserver);
+                    unregisterAdapterDataObserver(_adapterObserver);
                     notifyItemMoved(fromPosition, toPosition);
-                    registerAdapterDataObserver(_innerAdapterObserver);
+                    registerAdapterDataObserver(_adapterObserver);
                 }
 
                 @Override
                 public void onItemRangeRemoved(int positionStart, int itemCount) {
                     super.onItemRangeRemoved(positionStart, itemCount);
                     positionStart += mPlaceholderSize;
-                    unregisterAdapterDataObserver(_innerAdapterObserver);
+                    unregisterAdapterDataObserver(_adapterObserver);
                     notifyItemRangeRemoved(positionStart, itemCount);
-                    registerAdapterDataObserver(_innerAdapterObserver);
+                    registerAdapterDataObserver(_adapterObserver);
                 }
             };
 

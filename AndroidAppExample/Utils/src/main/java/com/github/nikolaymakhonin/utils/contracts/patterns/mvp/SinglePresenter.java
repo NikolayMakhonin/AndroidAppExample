@@ -202,7 +202,7 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
     //region AllowBindView
 
-    private boolean _allowBindView;
+    private boolean _allowBindView = true;
 
     @Override
     public boolean isAllowBindView() {
