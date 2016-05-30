@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
+    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
 
     <application
+        android:largeHeap="true"
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,9 +21,13 @@
             android:theme="@style/AppDefault"
             >
             <intent-filter>
-                <!-- For Google Search: -->
-                <!-- http://developer.android.com/training/app-indexing/deep-linking.html -->
-                <!-- https://developers.google.com/app-indexing/android/app#add-intent-filters-for-http-urls -->
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <!--For Google Search: -->
+                <!--http://developer.android.com/training/app-indexing/deep-linking.html -->
+                <!--https://developers.google.com/app-indexing/android/app#add-intent-filters-for-http-urls -->
 
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -30,9 +35,6 @@
                 <data android:scheme="https"
                     android:host="www.github.com"
                     android:pathPrefix="/NikolayMakhonin/AndroidAppExample" />
-
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 

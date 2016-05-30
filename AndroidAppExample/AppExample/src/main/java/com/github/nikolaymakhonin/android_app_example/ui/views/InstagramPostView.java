@@ -20,6 +20,7 @@ import com.github.nikolaymakhonin.android_app_example.presentation.instagram.pre
 import com.github.nikolaymakhonin.android_app_example.presentation.instagram.views.IInstagramPostView;
 import com.github.nikolaymakhonin.common_di.contracts.IHasAppComponentBase;
 import com.github.nikolaymakhonin.utils.CompareUtils;
+import com.github.nikolaymakhonin.utils.strings.StringUtilsExt;
 
 import java.net.URI;
 
@@ -161,7 +162,12 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
             _currentImageUri = imageUri;
             int imageWidth = _imageLayoutWidth;
             int imageHeight = (media.getHeight() * imageWidth) / media.getWidth();
-            _appComponent.getPicasso().load(imageUri.toString()).resize(imageWidth, imageHeight).into(_imageView);
+            _appComponent.getPicasso()
+                .load(imageUri.toString())
+                .error(R.drawable.error)
+                .placeholder(R.drawable.loading_animated)
+                .resize(imageWidth, imageHeight)
+                .into(_imageView);
         }
     }
 
@@ -170,7 +176,9 @@ public class InstagramPostView extends RelativeLayout implements IInstagramPostV
     @Override
     public void updateView(InstagramPost instagramPost) {
         _instagramPost = instagramPost;
-        _titleTextView.setText(instagramPost.getTitle());
+        String title = instagramPost.getTitle();
+        _titleTextView.setText(title);
+        _titleTextView.setVisibility(StringUtilsExt.isNullOrEmpty(title) ? GONE : VISIBLE);
         loadImageByUri(false);
     }
 

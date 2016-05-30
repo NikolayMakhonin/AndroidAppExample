@@ -21,7 +21,9 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import io.fabric.sdk.android.Fabric;
+import rx.Observable;
 import rx.Observer;
+import rx.schedulers.Schedulers;
 
 @Module
 public class FabricModule {
@@ -93,7 +95,7 @@ public class FabricModule {
                 Crashlytics.logException(logEventInfo.exception);
                 if (logEventInfo.terminateApplication) {
                     // If fatal error, send error to fabric in new thread and close application
-                    Thread thread = new Thread(() -> {
+                    Observable.just(null).observeOn(Schedulers.computation()).subscribe(o -> {
                         //noinspection finally
                         try {
                             Crashlytics.getInstance().core.getFabric().getExecutorService()
@@ -104,7 +106,6 @@ public class FabricModule {
                             System.exit(1);
                         }
                     });
-                    thread.start();
                 }
             } else {
                 Crashlytics.log(logEventInfo.priority, logEventInfo.tag, logEventInfo.message);

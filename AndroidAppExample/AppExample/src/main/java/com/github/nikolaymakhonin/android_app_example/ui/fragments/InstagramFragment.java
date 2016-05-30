@@ -80,7 +80,7 @@ public class InstagramFragment extends Fragment implements IHasTitle, IFragmentW
     @Override
     public void onResume() {
         super.onResume();
-        _instagramListAdapter.loadByGeo(22.277872, 114.1762067, 1000);
+        _instagramListAdapter.loadByGeo(37.729008091088154, -119.58605069941405, 4995);
     }
 
     private void initControls() {

@@ -5,6 +5,7 @@ import com.github.nikolaymakhonin.utils.RefParam;
 
 import rx.Observable;
 import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
@@ -15,12 +16,13 @@ public class DynamicObservablesMerger<T>  {
     @SafeVarargs
     public DynamicObservablesMerger(Observable<T>... baseAttachedObservables) {
         _modifiedObservables = PublishSubject.create();
-        _modifiedObservablesBuffer = RxOperators.replay(_modifiedObservables);
+        _modifiedObservablesBuffer = RxOperators.replay(_modifiedObservables.observeOn(Schedulers.computation()));
         //There is no need to unsubscribe:
         _modifiedObservablesBuffer.connect();
 
         _treeModifiedSubject = Observable
-            .concatEager(_modifiedObservablesBuffer);
+            .concatEager(_modifiedObservablesBuffer)
+            .observeOn(Schedulers.computation());
 
         for (Observable<T> baseAttachedObservable : baseAttachedObservables) {
             attach(baseAttachedObservable);

@@ -13,6 +13,7 @@ import java.util.Collection;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public abstract class AutoSyncRecyclerViewAdapter<TViewHolder extends RecyclerView.ViewHolder, TItem extends ITreeModified, TList extends ICollectionChangedList<TItem>>
     extends RecyclerView.Adapter<TViewHolder>
@@ -25,7 +26,9 @@ public abstract class AutoSyncRecyclerViewAdapter<TViewHolder extends RecyclerVi
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+        //noinspection RedundantCast
         _collectionChangedSubscription = _listObservableOptimizer.observable()
+            .subscribeOn(Schedulers.computation())
             .subscribe((Action1<CollectionChangedEventArgs>) e -> collectionChanged(e));
     }
 

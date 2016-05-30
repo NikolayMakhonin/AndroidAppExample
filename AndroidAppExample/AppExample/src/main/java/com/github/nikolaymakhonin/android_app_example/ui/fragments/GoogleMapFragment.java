@@ -38,6 +38,8 @@ public class GoogleMapFragment extends Fragment implements IHasTitle, IFragmentW
 
     private static final String LOG_TAG = "GoogleMapFragment";
 
+    private static final String BUNDLE_KEY_MAP_STATE = "mapData";
+
     private View                 _contentView;
     private ObservableScrollView _scrollView;
     private MapView              _mapView;
@@ -104,26 +106,38 @@ public class GoogleMapFragment extends Fragment implements IHasTitle, IFragmentW
     private void initMapView(Bundle savedInstanceState) {
         // Gets the MapView from the XML layout and creates it
         _mapView = (MapView) _contentView.findViewById(R.id.mapView);
-        _mapView.onCreate(savedInstanceState);
+
+        Bundle mapState = null;
+        if (savedInstanceState != null) {
+            // Load the map state bundle from the main savedInstanceState
+            mapState = savedInstanceState.getBundle(BUNDLE_KEY_MAP_STATE);
+        }
+        _mapView.onCreate(mapState);
+
         _mapView.getMapAsync(this);
 
-        final View.OnLayoutChangeListener[] layoutChangeListener = new View.OnLayoutChangeListener[1];
-        layoutChangeListener[0] = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            _scrollView.removeOnLayoutChangeListener(layoutChangeListener[0]);
-            initMapViewHeight();
-        };
-        _scrollView.addOnLayoutChangeListener(layoutChangeListener[0]);
+//        final View.OnLayoutChangeListener[] layoutChangeListener = new View.OnLayoutChangeListener[1];
+//        layoutChangeListener[0] = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+//            _scrollView.removeOnLayoutChangeListener(layoutChangeListener[0]);
+//            initMapViewHeight();
+//        };
+//        _scrollView.addOnLayoutChangeListener(layoutChangeListener[0]);
     }
 
-    private void initMapViewHeight() {
+//    private void initMapViewHeight() {
 //        ViewGroup.LayoutParams layoutParams = _mapView.getLayoutParams();
 //        layoutParams.height = _scrollView.getHeight() - Math.round(MaterialViewPagerHelper.getAnimator(getContext()).scrollMax);
-    }
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        // Save the map state to it's own bundle
+        Bundle mapState = new Bundle();
+        _mapView.onSaveInstanceState(mapState);
+        // Put the map bundle in the main outState
+        outState.putBundle(BUNDLE_KEY_MAP_STATE, mapState);
+
         super.onSaveInstanceState(outState);
-        _mapView.onSaveInstanceState(outState);
     }
 
     @Override
@@ -176,6 +190,11 @@ public class GoogleMapFragment extends Fragment implements IHasTitle, IFragmentW
         _map.addMarker(new MarkerOptions().position(hongKong).title("Hong-Kong"));
         _map.moveCamera(CameraUpdateFactory.newLatLngZoom(hongKong, 16.45f));
 
+//        LocationManager service      = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+//        Criteria        criteria     = new Criteria();
+//        String          provider     = service.getBestProvider(criteria, false);
+//        Location        location     = service.getLastKnownLocation(provider);
+//        LatLng          userLocation = new LatLng(location.getLatitude(),location.getLongitude());
 
 //        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
 //        int errorCode = MapsInitializer.initialize(getActivity());

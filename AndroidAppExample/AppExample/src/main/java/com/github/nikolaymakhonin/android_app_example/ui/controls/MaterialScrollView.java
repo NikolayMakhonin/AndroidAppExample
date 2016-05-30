@@ -38,6 +38,11 @@ public class MaterialScrollView extends ObservableScrollView {
         _initialized = true;
 
         setSmoothScrollingEnabled(false);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
 
         ViewGroup innerLayout = getInnerLayout();
         if (innerLayout == null) {
@@ -70,7 +75,7 @@ public class MaterialScrollView extends ObservableScrollView {
 
     private int getMinHeaderHeight() {
         //TODO: get current Header height
-        return 110;
+        return 95;
     }
 
     private int getMaxHeaderHeight() {

@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        android:src="@drawable/navigation_header_background_2" />
+        android:src="@drawable/navigation_header_background_6" />
 
     <RelativeLayout
         android:layout_width="match_parent"

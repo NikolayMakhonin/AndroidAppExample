@@ -16,6 +16,7 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
+import rx.schedulers.Schedulers;
 
 /**
  * One view and one viewModel
@@ -115,9 +116,10 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
                 Observable.just(_view.isAttached()),
                 _view.attachedObservable()
             )
+            .observeOn(Schedulers.computation())
             .subscribe((Action1<Boolean>) attached -> {
                 synchronized (_propertySetLocker) {
-                    if (attached) {
+                    if (attached && _viewAttachedSubscription != null) {
                         subscribeDoUpdateView();
                     } else {
                         unSubscribeDoUpdateView();
