@@ -116,14 +116,12 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
                 Observable.just(_view.isAttached()),
                 _view.attachedObservable()
             )
-            .observeOn(Schedulers.computation())
+            //.observeOn(Schedulers.computation())
             .subscribe((Action1<Boolean>) attached -> {
-                synchronized (_propertySetLocker) {
-                    if (attached && _viewAttachedSubscription != null) {
-                        subscribeDoUpdateView();
-                    } else {
-                        unSubscribeDoUpdateView();
-                    }
+                if (attached && _viewAttachedSubscription != null) {
+                    subscribeDoUpdateView();
+                } else {
+                    unSubscribeDoUpdateView();
                 }
             });
     }
