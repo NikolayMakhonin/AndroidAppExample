@@ -4,6 +4,7 @@ import com.github.nikolaymakhonin.utils.CompareUtils;
 import com.github.nikolaymakhonin.utils.contracts.patterns.BaseTreeModified;
 import com.github.nikolaymakhonin.utils.contracts.patterns.ITreeModified;
 import com.github.nikolaymakhonin.utils.rx.RxOperators;
+import com.github.nikolaymakhonin.utils.threads.ThreadUtils;
 
 import org.javatuples.Pair;
 
@@ -15,7 +16,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 
 /**
@@ -33,10 +33,6 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
     //region Update view subscription
 
-    private Subscription _doUpdateViewObservableReplaySubscription;
-
-    private ConnectableObservable _doUpdateViewObservableReplay;
-
     private Observable<Pair<TView, TViewModel>> _doUpdateViewObservable;
 
     private boolean _doUpdateViewObservableInitialized;
@@ -48,23 +44,14 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
         _doUpdateViewObservableInitialized = true;
 
-        ConnectableObservable doUpdateViewObservableReplay = Observable.concatEager(
-            Observable.just(null),
-            TreeModified()
-        )
-            .filter(o -> isViewBind())
-            .replay(1);
-
         //noinspection RedundantCast
-        Observable<Pair<TView, TViewModel>> doUpdateViewObservable = doUpdateViewObservableReplay
-            .lift(RxOperators.deferred(250, TimeUnit.MILLISECONDS))
+        Observable<Pair<TView, TViewModel>> doUpdateViewObservable = TreeModified()
             .filter(o -> isViewBind())
-            .map(o -> new Pair<>(_view, _viewModel))
-            .filter((Func1<Pair<TView, TViewModel>, Boolean>)p -> isViewBind(p.getValue0(), p.getValue1()));
+            .lift(RxOperators.deferred(250, TimeUnit.MILLISECONDS))
+            .filter(o -> isViewBind());
         doUpdateViewObservable = preUpdateView(doUpdateViewObservable);
         doUpdateViewObservable.observeOn(AndroidSchedulers.mainThread());
 
-        _doUpdateViewObservableReplay = doUpdateViewObservableReplay;
         _doUpdateViewObservable = doUpdateViewObservable;
     }
 
@@ -72,27 +59,25 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
 
     private void subscribeDoUpdateView() {
         initDoUpdateViewObservable();
-        _doUpdateViewObservableReplaySubscription = _doUpdateViewObservableReplay.connect();
         //noinspection RedundantCast
         _doUpdateViewSubscription = _doUpdateViewObservable
-            .subscribe((Action1<Pair<TView, TViewModel>>)p -> {
-                TView view = p.getValue0();
-                TViewModel viewModel = p.getValue1();
-                if (!isViewBind(view, viewModel)) {
-                    return;
-                }
-                updateView(view, viewModel);
-            });
+            .subscribe(o -> updateView());
     }
 
     private void unSubscribeDoUpdateView() {
-        if (_doUpdateViewObservableReplaySubscription != null) {
-            _doUpdateViewObservableReplaySubscription.unsubscribe();
-        }
         if (_doUpdateViewSubscription != null) {
             _doUpdateViewSubscription.unsubscribe();
             _doUpdateViewSubscription = null;
         }
+    }
+
+    private void updateView() {
+        TView view = _view;
+        TViewModel viewModel = _viewModel;
+        if (!isViewBind(view, viewModel)) {
+            return;
+        }
+        updateView(view, viewModel);
     }
 
     protected void updateView(TView view, TViewModel viewModel) {
@@ -110,13 +95,23 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
             return;
         }
 
+        boolean isMainThread = ThreadUtils.isMainThread();
+        Observable viewAttachedObservable = _view.attachedObservable();
+        if (!isMainThread) {
+            viewAttachedObservable = Observable
+                .concatEager(
+                    Observable.just(_view.isAttached())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                    viewAttachedObservable);
+        }
+
         //noinspection RedundantCast
-        _viewAttachedSubscription =
-            Observable.concatEager(
-                Observable.just(_view.isAttached()),
-                _view.attachedObservable()
-            )
-            //.observeOn(Schedulers.computation())
+        _viewAttachedSubscription = viewAttachedObservable
+            .map((Func1<Boolean, Boolean>) attached -> {
+                updateView();
+                return attached;
+            })
+            .observeOn(Schedulers.computation())
             .subscribe((Action1<Boolean>) attached -> {
                 if (attached && _viewAttachedSubscription != null) {
                     subscribeDoUpdateView();
@@ -124,6 +119,10 @@ public abstract class SinglePresenter<TView extends IView, TViewModel extends IT
                     unSubscribeDoUpdateView();
                 }
             });
+
+        if (isMainThread) {
+            updateView();
+        }
     }
 
     private void unBindView() {
